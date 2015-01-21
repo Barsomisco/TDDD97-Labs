@@ -29,3 +29,13 @@ body {
     margin-top: 10px;
     background-color: white;
 }
+
+input {
+    width: 148px;
+    float: left;
+}
+
+label {
+    width: 100px;
+    float: left;
+}
