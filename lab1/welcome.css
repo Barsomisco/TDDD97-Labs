@@ -47,6 +47,11 @@ input {
     float: left;
 }
 
+select {
+    width: 118px;
+    float: left;
+}
+
 label {
     width: 130px;
     float: left;
