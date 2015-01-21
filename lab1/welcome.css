@@ -1,5 +1,5 @@
 body {
-    background-color: #d0e4fe;
+    background-color: #6273F5;
 }
 
 #container {
@@ -31,30 +31,27 @@ body {
     background-color: white;
     position: relative;
 }
-form {
-    width: 248px;
+
+form.login {
+    margin-top: 55px;
 }
-label {
-    float: left;
-    margin-top: 2px;
-}
-input {
-    width: 130px;
-    float: right;
-    margin-top: 2px;
-}
-#SubmitButton {
+
+input.submitbutton {
     position: absolute;
-    right: 1;
-    bottom: 1;
+    right: 1px;
+    bottom: 1px;
 }
 
 input {
-    width: 148px;
+    width: 118px;
     float: left;
 }
 
 label {
-    width: 100px;
+    width: 130px;
     float: left;
+}
+
+h3 {
+    font-size: 12px;
 }
