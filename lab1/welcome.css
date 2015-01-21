@@ -20,6 +20,7 @@ body {
     width: 250px;
     height: 150px;
     background-color: white;
+    position: relative;
 }
 
 #signup {
@@ -28,4 +29,22 @@ body {
     height: 240px;
     margin-top: 10px;
     background-color: white;
+}
+form {
+    width: 250px;
+    margin-top: 40px;
+}
+label {
+    float: left;
+    margin-top: 10px;
+}
+input {
+    float: right;
+    margin-top: 10px;
+    margin-right: 5px;
+}
+button {
+    position: absolute;
+    right: 0;
+    bottom: 0;
 }
