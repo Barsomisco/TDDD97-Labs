@@ -15,6 +15,22 @@ logInValidation = function(){
     }
 };
 
+checkPassword = function() {
+    var password = document.getElementById("password").value;
+    var repeatedPassword = document.getElementById("repeatpassword").value;
+    var message = document.getElementById("message");
+    if (password != repeatedPassword) {
+        message.style.color = "#ff6666";
+        message.innerHTML = "Passwords does not match";
+        return false;
+    }
+    else {
+        message.style.color = "#66cc66";
+        message.innerHTML = "";
+        return false;
+    }
+};
+
 signUpValidation = function(formData){
     var password = formData.password.value;
     if (password.length < 7){
@@ -23,7 +39,8 @@ signUpValidation = function(formData){
     }
     var repeatedPassword = formData.repeatpassword.value;
         if (repeatedPassword != password) {
-        alert("Passwords do not match");
+            
+    //    alert("Passwords do not match");
         return false;
     }
 

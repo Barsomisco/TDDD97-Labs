@@ -31,9 +31,10 @@
                     <label>City</label><input type="text" name="city" required>
                     <label>Contry</label><input type="text" name="country" required>
                     <label>Email</label><input type="email" name="email" required>
-                    <label>Password</label><input type="password" name="password" required>
+                    <label>Password</label><input type="password" id="password" required>
                     
-                    <label>Repeat PSW</label><input type="password" name="repeatpassword" required>
+                    <label>Repeat PSW</label><input type="password" id="repeatpassword" onkeyup="checkPassword()" required>
+                    <span id="message" class="confirmMessage"></span>
                     <input class="submitbutton" type="submit" value="SignUp"> 
                 </form>
             </div>
