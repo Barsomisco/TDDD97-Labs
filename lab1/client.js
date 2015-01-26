@@ -15,17 +15,30 @@ logInValidation = function(){
     }
 };
 
-signUpValidation = function(){
-    var password = document.forms.signUpForm.signUpPass.value;
+signUpValidation = function(formData){
+    var password = formData.password.value;
     if (password.length < 7){
         alert("Password should be at least 7 characters long");
         return false;
     }
-    var repeatedPassword = document.forms.repeatPass.value;
-    if (repeatedPassword != password) {
+    var repeatedPassword = formData.repeatpassword.value;
+        if (repeatedPassword != password) {
         alert("Passwords do not match");
         return false;
     }
+
+    var regData = {
+        "firstname": formData.firstname.value,
+        "familyname": formData.familyname.value,
+        "gender": formData.gender.value,
+        "city": formData.city.value,
+        "country": formData.country.value,
+        "email": formData.email.value,
+        "password": formData.password.value        
+    };
+
+      var m = serverstub.signUp(regData);
+      alert(m.message);
 };
 
 
