@@ -1,6 +1,10 @@
 displayView = function(){
-    // the code required to display a view
-    document.getElementById("showwelcomeview").innerHTML = document.getElementById("welcomeview").innerHTML;
+    if (localStorage.getItem("token") !== null) {
+        document.getElementById("view").innerHTML = document.getElementById("profileview").innerHTML;
+    }
+    else {
+        document.getElementById("view").innerHTML = document.getElementById("welcomeview").innerHTML;
+    }
 };
 
 window.onload = function(){
@@ -12,6 +16,7 @@ logInValidation = function(signInForm) {
     signinmessage.innerHTML = result.message;
     if (result.success) {
         localStorage.token = result.data;
+        document.getElementById("view").innerHTML = document.getElementById("profileview").innerHTML;
         return true;
     }
     else {
@@ -76,7 +81,13 @@ signUpValidation = function(formData){
     var message = document.getElementById("message");
     var m = serverstub.signUp(regData);
     message.innerHTML = m.message;
-    return m.success;
+    if (m.success){
+        serverstub.signIn(formData.email.value, formData.password.value);
+        localStorage.token = result.data;
+        document.getElementById("view").innerHTML = document.getElementById("profileview").innerHTML;
+        return true;
+    }
+    return false;
 };
 
 
