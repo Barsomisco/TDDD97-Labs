@@ -15,17 +15,35 @@ logInValidation = function(){
     }
 };
 
-checkPassword = function() {
+checkRequiredPassword = function() {
     var password = document.getElementById("password").value;
     var repeatedPassword = document.getElementById("repeatpassword").value;
     var message = document.getElementById("message");
+    if (password.length < 7) {
+        message.innerHTML = "Password is to short";
+        return false;
+    }
     if (password != repeatedPassword) {
-        message.style.color = "#ff6666";
         message.innerHTML = "Passwords does not match";
         return false;
     }
     else {
-        message.style.color = "#66cc66";
+        message.innerHTML = "";
+        return false;
+    }
+};
+
+checkPassword = function() {
+    var password = document.getElementById("password").value;
+    var message = document.getElementById("message");
+    if (password.length < 7){
+        message.innerHTML = "Password is to short";
+        return false;
+    } 
+    else if(!checkRequiredPassword()) {
+        return false;
+    } 
+    else {
         message.innerHTML = "";
         return false;
     }
@@ -34,13 +52,10 @@ checkPassword = function() {
 signUpValidation = function(formData){
     var password = formData.password.value;
     if (password.length < 7){
-        alert("Password should be at least 7 characters long");
         return false;
     }
     var repeatedPassword = formData.repeatpassword.value;
-        if (repeatedPassword != password) {
-            
-    //    alert("Passwords do not match");
+    if (repeatedPassword != password) {
         return false;
     }
 
@@ -54,8 +69,10 @@ signUpValidation = function(formData){
         "password": formData.password.value        
     };
 
-      var m = serverstub.signUp(regData);
-      alert(m.message);
+    var message = document.getElementById("message");
+    var m = serverstub.signUp(regData);
+    message.innerHTML = m.message;
+    return m.success;
 };
 
 

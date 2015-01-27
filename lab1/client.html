@@ -19,7 +19,7 @@
             </div>
             <div id="signup">
                 <h3 align="center">Sign up here</h3>
-                <form name="signUpForm" onsubmit="signUpValidation(this)">
+                <form name="signUpForm" onsubmit="signUpValidation(this); return false;">
                     <label>First name</label><input type="text" name="firstname" required>
                     <label>Family name</label><input type="text" name="familyname" required>
                     <label>Gender</label>
@@ -31,9 +31,9 @@
                     <label>City</label><input type="text" name="city" required>
                     <label>Contry</label><input type="text" name="country" required>
                     <label>Email</label><input type="email" name="email" required>
-                    <label>Password</label><input type="password" id="password" required>
+                    <label>Password</label><input type="password" id="password" onkeyup="checkPassword()" required>
                     
-                    <label>Repeat PSW</label><input type="password" id="repeatpassword" onkeyup="checkPassword()" required>
+                    <label>Repeat PSW</label><input type="password" id="repeatpassword" onkeyup="checkRequiredPassword()" required>
                     <span id="message" class="confirmMessage"></span>
                     <input class="submitbutton" type="submit" value="SignUp"> 
                 </form>
