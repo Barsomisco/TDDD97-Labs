@@ -9,11 +9,11 @@
                 <img src="wimage.png" alt="logo">
             </div>
             <div id="login">
-                <form class="login" name="logInForm" onsubmit="logInValidation()">
+                <form class="login" name="logInForm" onsubmit="logInValidation(this)">
                     <label>Email</label>
-                    <input type="email" required>
+                    <input type="email" id="signinemail" required>
                     <label>Password</label>
-                    <input type="password" name="logInPass" required>
+                    <input type="password" id="signinpassword" required>
                     <input class="submitbutton" type="submit" value="Login">
                 </form>
             </div>

@@ -7,12 +7,14 @@ window.onload = function(){
     displayView();
 };
 
-logInValidation = function(){
-    var password = document.forms.logInForm.logInPass.value;
-    if (password.length < 7){
-        alert("Password should be at least 7 characters long");
-        return false;
-    }
+logInValidation = function(signUpForm) {
+    var signInData = {
+        "email": signUpForm.signinemail.value,
+        "password": signUpForm.signinpassword.value
+    };
+    var result = serverstub.signIn(signInData);
+    window.alert(result.message);
+    return result.success;
 };
 
 checkRequiredPassword = function() {
