@@ -7,12 +7,8 @@ window.onload = function(){
     displayView();
 };
 
-logInValidation = function(signUpForm) {
-    var signInData = {
-        "email": signUpForm.signinemail.value,
-        "password": signUpForm.signinpassword.value
-    };
-    var result = serverstub.signIn(signInData);
+logInValidation = function(signInForm) {
+    var result = serverstub.signIn(signInForm.signinemail.value, signInForm.signinpassword.value);
     window.alert(result.message);
     return result.success;
 };
