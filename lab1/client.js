@@ -10,7 +10,13 @@ window.onload = function(){
 logInValidation = function(signInForm) {
     var result = serverstub.signIn(signInForm.signinemail.value, signInForm.signinpassword.value);
     signinmessage.innerHTML = result.message;
-    return result.success;
+    if (result.success) {
+        localStorage.token = result.data;
+        return true;
+    }
+    else {
+        return false;
+    } 
 };
 
 checkRequiredPassword = function() {
