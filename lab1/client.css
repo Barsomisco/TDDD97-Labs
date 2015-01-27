@@ -62,6 +62,9 @@ h3 {
 }
 
 span {
-    font-size: 9px;
     color: red;
+}
+
+span.smallConfirmMessage {
+    font-size: 9px;
 }

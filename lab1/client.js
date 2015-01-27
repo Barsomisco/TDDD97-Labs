@@ -9,7 +9,7 @@ window.onload = function(){
 
 logInValidation = function(signInForm) {
     var result = serverstub.signIn(signInForm.signinemail.value, signInForm.signinpassword.value);
-    window.alert(result.message);
+    signinmessage.innerHTML = result.message;
     return result.success;
 };
 

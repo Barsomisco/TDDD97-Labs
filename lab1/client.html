@@ -9,11 +9,12 @@
                 <img src="wimage.png" alt="logo">
             </div>
             <div id="login">
-                <form class="login" name="logInForm" onsubmit="logInValidation(this)">
+                <form class="login" name="logInForm" onsubmit="logInValidation(this); return false;">
                     <label>Email</label>
                     <input type="email" id="signinemail" required>
                     <label>Password</label>
                     <input type="password" id="signinpassword" required>
+                    <span id="signinmessage"></span>
                     <input class="submitbutton" type="submit" value="Login">
                 </form>
             </div>
@@ -34,7 +35,7 @@
                     <label>Password</label><input type="password" id="password" onkeyup="checkPassword()" required>
                     
                     <label>Repeat PSW</label><input type="password" id="repeatpassword" onkeyup="checkRequiredPassword()" required>
-                    <span id="message" class="confirmMessage"></span>
+                    <span id="message" class="smallConfirmMessage"></span>
                     <input class="submitbutton" type="submit" value="SignUp"> 
                 </form>
             </div>
