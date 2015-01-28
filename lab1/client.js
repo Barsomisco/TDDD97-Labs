@@ -1,6 +1,7 @@
 displayView = function(){
     if (localStorage.getItem("token") !== null) {
         document.getElementById("view").innerHTML = document.getElementById("profileview").innerHTML;
+        selected(document.getElementById("home"));
     }
     else {
         document.getElementById("view").innerHTML = document.getElementById("welcomeview").innerHTML;
@@ -90,4 +91,27 @@ signUpValidation = function(formData){
     return false;
 };
 
+selected = function(item) {
+    item.style.backgroundColor = "#999999";
 
+    for (var i = 0; i<item.parentNode.childNodes.length; ++i) {
+        if (item.parentNode.childNodes[i].nodeType == Node.ELEMENT_NODE && item.parentNode.childNodes[i].innerHTML != item.innerHTML)
+            item.parentNode.childNodes[i].style.backgroundColor = "gray";
+    }
+
+    if (item.innerHTML == "Home") {
+        document.getElementById("homeview").style.display = "block";
+        document.getElementById("browseview").style.display = "none";
+        document.getElementById("accountview").style.display = "none";
+    }
+    else if (item.innerHTML == "Browse") {
+        document.getElementById("homeview").style.display = "none";
+        document.getElementById("browseview").style.display = "block";
+        document.getElementById("accountview").style.display = "none";
+    }
+    else {
+        document.getElementById("homeview").style.display = "none";
+        document.getElementById("browseview").style.display = "none";
+        document.getElementById("accountview").style.display = "block";
+    }
+};
