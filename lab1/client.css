@@ -85,6 +85,17 @@ span.smallConfirmMessage {
     position: relative;
 }
 
+#homeview {
+    background-color: white;
+    width: 350px;
+    float: left;
+    position: relative;
+}
+
+#homeview div {
+    float: left;
+}
+
 input.account {
     position: absolute;
     right: 102px;
