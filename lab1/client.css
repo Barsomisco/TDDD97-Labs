@@ -76,3 +76,28 @@ span.smallConfirmMessage {
     margin-left: 50px;
     cursor: pointer;
 }
+
+#accountview {
+    background-color: white;
+    width: 350px;
+    height: 300px;
+    float: left;
+    position: relative;
+}
+
+input.account {
+    position: absolute;
+    right: 102px;
+    bottom: 100px;
+}
+
+span.newpasswordmessage {
+    width: 350px;
+    float: left;
+}
+
+button {
+ position: absolute;
+ right: 1px;
+ bottom: 1px;
+}

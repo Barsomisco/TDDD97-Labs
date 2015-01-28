@@ -18,6 +18,7 @@ logInValidation = function(signInForm) {
     if (result.success) {
         localStorage.token = result.data;
         document.getElementById("view").innerHTML = document.getElementById("profileview").innerHTML;
+        selected(document.getElementById("home"));
         return true;
     }
     else {
@@ -59,6 +60,31 @@ checkPassword = function() {
     }
 };
 
+checkNewPassword = function(newpassword) {
+    var password = newpassword.value;
+    var message = document.getElementById("newpassmessage");
+    if (password.length < 7) {
+        message.innerHTML = "Password is to short";
+        return false;
+    }
+    message.innerHTML = "";
+    return true;
+};
+
+changePassword = function(formData) {
+    var token = localStorage.getItem("token");
+    var oldPassword = formData.oldpassword.value;
+    var newPassword = formData.newpassword.value;
+    var message = document.getElementById("newpassmessage");
+    if (newPassword.length < 7) {
+        message.innerHTML = "Password is to short";
+        return false;
+    }
+    var result = serverstub.changePassword(token, oldPassword, newPassword);
+    message.innerHTML = result.message;
+    return result.success;
+};
+
 signUpValidation = function(formData){
     var password = formData.password.value;
     if (password.length < 7){
@@ -83,12 +109,21 @@ signUpValidation = function(formData){
     var m = serverstub.signUp(regData);
     message.innerHTML = m.message;
     if (m.success){
-        serverstub.signIn(formData.email.value, formData.password.value);
+        var result = serverstub.signIn(formData.email.value, formData.password.value);
         localStorage.token = result.data;
         document.getElementById("view").innerHTML = document.getElementById("profileview").innerHTML;
+        selected(document.getElementById("home"));
         return true;
     }
     return false;
+};
+
+signOut = function() {
+    var token = localStorage.getItem("token");
+    localStorage.removeItem("token");
+    var result = serverstub.signOut(token);
+    alert(result.success);
+    document.getElementById("view").innerHTML = document.getElementById("welcomeview").innerHTML;
 };
 
 selected = function(item) {

@@ -35,7 +35,7 @@
                     <label>Password</label><input type="password" id="password" onkeyup="checkPassword()" required>
 
                     <label>Repeat PSW</label><input type="password" id="repeatpassword" onkeyup="checkRequiredPassword()" required>
-                    <span id="message" class="smallConfirmMessage"></span>
+                    <span id="message"></span>
                     <input class="submitbutton" type="submit" value="SignUp"> 
                 </form>
             </div>
@@ -49,7 +49,16 @@
             </div>
             <div id="homeview">Home</div>
             <div id="browseview">Browse</div>
-            <div id="accountview">Account</div>
+            <div id="accountview">
+            <h1>Change Password</h1>
+            <form id="changepassword" onsubmit="changePassword(this); return false;">
+            <label>Old Password</label><input type="password" id="oldpassword" required>
+            <label>New Password</label><input type="password" id="newpassword" onkeyup="checkNewPassword(this)" required> 
+            <span class="newpasswordmessage" id="newpassmessage"></span>
+            <input class="account" type="submit" value="Change Password">
+            </form>
+            <button type="button" onclick="signOut()"> Sign Out </button>
+            </div>
         </script>
     </head>
     <body>
