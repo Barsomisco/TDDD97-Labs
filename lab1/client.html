@@ -47,7 +47,21 @@
                 <div onclick="selected(this)" id="browse">Browse</div>
                 <div onclick="selected(this)" id="account">Account</div>
             </div>
-            <div id="homeview">Home</div>
+            <div id="homeview">
+                <h1>Logged in user</h1>
+                <label>Name: </label>
+                <div id="loggedinname"></div><br>
+                <label>Family name: </label>
+                <div id="loggedinfamilyname"></div><br>
+                <label>Gender: </label>
+                <div id="loggedingender"></div><br>
+                <label>City: </label>
+                <div id="loggedincity"></div><br>
+                <label>Country: </label>
+                <div id="loggedincountry"></div><br>
+                <label>Email: </label>
+                <div id="loggedinemail"></div><br>
+            </div>
             <div id="browseview">
             <h1>Search for a user</h1>
             <form id="searchuser" onsubmit="searchUser()">

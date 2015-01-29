@@ -138,6 +138,7 @@ selected = function(item) {
         document.getElementById("homeview").style.display = "block";
         document.getElementById("browseview").style.display = "none";
         document.getElementById("accountview").style.display = "none";
+        updateHome();
     }
     else if (item.innerHTML == "Browse") {
         document.getElementById("homeview").style.display = "none";
@@ -149,4 +150,14 @@ selected = function(item) {
         document.getElementById("browseview").style.display = "none";
         document.getElementById("accountview").style.display = "block";
     }
+};
+
+updateHome = function() {
+    var userdata = serverstub.getUserDataByToken(localStorage.getItem("token")).data;
+    document.getElementById("loggedinname").innerHTML = userdata.firstname;
+    document.getElementById("loggedinfamilyname").innerHTML = userdata.familyname;
+    document.getElementById("loggedingender").innerHTML = userdata.gender;
+    document.getElementById("loggedincity").innerHTML = userdata.city;
+    document.getElementById("loggedincountry").innerHTML = userdata.country;
+    document.getElementById("loggedinemail").innerHTML = userdata.email;
 };
