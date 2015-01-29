@@ -44,6 +44,7 @@ checkRequiredPassword = function() {
 postText = function() {
     var text = document.getElementById("posttextarea").value;
     var result = serverstub.postMessage(localStorage.getItem("token"), text, serverstub.getUserDataByToken(localStorage.getItem("token")).data.email);
+    return result.success;
 };
 
 checkPassword = function() {
@@ -139,6 +140,7 @@ selected = function(item) {
         document.getElementById("browseview").style.display = "none";
         document.getElementById("accountview").style.display = "none";
         updateHome();
+        updateMessages();
     } else if (item.innerHTML == "Browse") {
         document.getElementById("homeview").style.display = "none";
         document.getElementById("browseview").style.display = "block";
@@ -158,4 +160,14 @@ updateHome = function() {
     document.getElementById("loggedincity").innerHTML = userdata.city;
     document.getElementById("loggedincountry").innerHTML = userdata.country;
     document.getElementById("loggedinemail").innerHTML = userdata.email;
+};
+
+updateMessages = function() {
+    var messages = serverstub.getUserMessagesByToken(localStorage.getItem("token")).data;
+    for (var i = 0; i<messages.length; ++i) {
+        if (i === 0)
+            document.getElementById("messages").innerHTML = "<div>" + messages[i].writer + " - " + messages[i].content + "</div>";
+        else
+            document.getElementById("messages").innerHTML += "<div>"+ messages[i].writer + " - " + messages[i].content + "</div>";
+    }
 };
