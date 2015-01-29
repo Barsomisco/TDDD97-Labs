@@ -92,8 +92,14 @@ span.smallConfirmMessage {
     position: relative;
 }
 
-#homeview div {
+#homeview div, input, textarea, label {
     float: left;
+    margin-left: 5px;
+}
+
+textarea {
+    width: 340px;
+    margin-top: 30px;
 }
 
 input.account {
