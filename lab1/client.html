@@ -48,7 +48,11 @@
                 <div onclick="selected(this)" id="account">Account</div>
             </div>
             <div id="homeview">Home</div>
-            <div id="browseview">Browse</div>
+            <div id="browseview">
+            <h1>Search for a user</h1>
+            <form id="searchuser" onsubmit="searchUser()">
+            </form>
+            </div>
             <div id="accountview">
             <h1>Change Password</h1>
             <form id="changepassword" onsubmit="changePassword(this); return false;">
