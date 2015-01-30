@@ -123,7 +123,6 @@ signOut = function() {
     var token = localStorage.getItem("token");
     localStorage.removeItem("token");
     var result = serverstub.signOut(token);
-    alert(result.success);
     document.getElementById("view").innerHTML = document.getElementById("welcomeview").innerHTML;
 };
 
@@ -152,8 +151,12 @@ selected = function(item) {
     }
 };
 
-updateHome = function() {
-    var userdata = serverstub.getUserDataByToken(localStorage.getItem("token")).data;
+updateHome = function(email) {
+    if (email == null) {
+        email = serverstub.getUserDataByToken(localStorage.getItem("token")).data.email;
+    }
+
+    var userdata = serverstub.getUserDataByEmail(localStorage.getItem("token"), email).data;
     document.getElementById("loggedinname").innerHTML = userdata.firstname;
     document.getElementById("loggedinfamilyname").innerHTML = userdata.familyname;
     document.getElementById("loggedingender").innerHTML = userdata.gender;
@@ -162,12 +165,29 @@ updateHome = function() {
     document.getElementById("loggedinemail").innerHTML = userdata.email;
 };
 
-updateMessages = function() {
-    var messages = serverstub.getUserMessagesByToken(localStorage.getItem("token")).data;
+updateMessages = function(email) {
+    if (email == null) {
+        email = serverstub.getUserDataByToken(localStorage.getItem("token")).data.email;
+    }
+    var messages = serverstub.getUserMessagesByEmail(localStorage.getItem("token"), email).data;
     for (var i = 0; i<messages.length; ++i) {
         if (i === 0)
             document.getElementById("messages").innerHTML = "<div>" + messages[i].writer + " - " + messages[i].content + "</div>";
         else
             document.getElementById("messages").innerHTML += "<div>"+ messages[i].writer + " - " + messages[i].content + "</div>";
+    }
+};
+
+searchUser = function(formData) {
+    var email = formData.searchemail.value;
+    var result = serverstub.getUserDataByEmail(localStorage.getItem("token"), email);
+    if (result.success) {
+        updateHome(email);
+        updateMessages(email);
+        document.getElementById("userpage").innerHTML = document.getElementById("homeview").innerHTML;
+    }
+    else {
+
+        return false;
     }
 };
