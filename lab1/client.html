@@ -76,8 +76,8 @@
             <label>Email: </label>
             <div id="loggedinemail"></div>
             <br>
-            <form id="posttext" onsubmit="postText()">
-                <textarea id="posttextarea" required></textarea>
+            <form id="posttext" onsubmit="postText(); return false;">
+                <textarea name="posttextarea" required></textarea>
                 <input type="submit" value="Post"></input>
             </form>
             </div>

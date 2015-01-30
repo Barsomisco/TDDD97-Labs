@@ -1,3 +1,6 @@
+var tab;
+var lastsearched;
+
 displayView = function() {
     if (localStorage.getItem("token") !== null) {
         document.getElementById("view").innerHTML = document.getElementById("profileview").innerHTML;
@@ -42,8 +45,21 @@ checkRequiredPassword = function() {
 };
 
 postText = function() {
-    var text = document.getElementById("posttextarea").value;
-    var result = serverstub.postMessage(localStorage.getItem("token"), text, serverstub.getUserDataByToken(localStorage.getItem("token")).data.email);
+    var recipient;
+    var text;
+    if (tab == "Browse") {
+        text = document.getElementsByName("posttextarea");
+        text = text[1].value;
+        recipient = lastsearched;
+    }
+    else {
+        text = document.getElementsByName("posttextarea");
+        text = text[0].value;
+        recipient = serverstub.getUserDataByToken(localStorage.getItem("token")).data.email;
+    }
+    var result = serverstub.postMessage(localStorage.getItem("token"), text, recipient);
+    updateMessages();
+    document.getElementById("posttextarea").value = "";
     return result.success;
 };
 
@@ -133,6 +149,7 @@ selected = function(item) {
         if (item.parentNode.childNodes[i].nodeType == Node.ELEMENT_NODE && item.parentNode.childNodes[i].innerHTML != item.innerHTML)
             item.parentNode.childNodes[i].style.backgroundColor = "gray";
     }
+    tab = item.innerHTML;
 
     if (item.innerHTML == "Home") {
         document.getElementById("homeview").style.display = "block";
@@ -180,6 +197,7 @@ updateMessages = function(email) {
 
 searchUser = function(formData) {
     var email = formData.searchemail.value;
+    lastsearched = email;
     var result = serverstub.getUserDataByEmail(localStorage.getItem("token"), email);
     if (result.success) {
         updateHome(email);
