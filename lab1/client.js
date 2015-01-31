@@ -55,7 +55,6 @@ postText = function() {
         result = serverstub.postMessage(localStorage.getItem("token"), text, recipient);
         document.getElementsByName("posttextarea")[1].value = "";
         searchUser();
-    //    updateMessages(recipient);
         return result.success;
     }
     else {
@@ -67,10 +66,6 @@ postText = function() {
         document.getElementsByName("posttextarea")[0].value = "";
         return result.success;
     }
-  //  var result = serverstub.postMessage(localStorage.getItem("token"), text, recipient);
-   // updateMessages();
-  //  document.getElementById("posttextarea").value = "";
-  //  return result.success;
 };
 
 checkPassword = function() {
@@ -211,6 +206,7 @@ searchUser = function(formData) {
     var email;
     if (formData == null) {
         email = lastsearched;
+
     }
     else {
     email = formData.searchemail.value;
@@ -221,9 +217,13 @@ searchUser = function(formData) {
         updateHome(email);
         updateMessages(email);
         document.getElementById("userpage").innerHTML = document.getElementById("homeview").innerHTML;
+        document.getElementsByName("header")[1].innerHTML = "";
+        document.getElementById("wrongemail").innerHTML = "";
     }
     else {
-
+        if (formData != null) {
+            document.getElementById("wrongemail").innerHTML = result.message;
+        }
         return false;
     }
 };

@@ -68,7 +68,7 @@ span.smallConfirmMessage {
     float: left;
     position: relative;
 }
-#homeview {
+#homeview, #browseview {
     width: 710px;
 }
 #wall {
@@ -112,4 +112,13 @@ button.bottomright {
     position: absolute;
     right: 1px;
     bottom: 1px;
+}
+
+#userpage {
+    float: left;
+    margin-top: 30px;
+}
+#browseview {
+    background-color: white;
+    height: 100px;
 }
