@@ -47,20 +47,30 @@ checkRequiredPassword = function() {
 postText = function() {
     var recipient;
     var text;
+    var result;
     if (tab == "Browse") {
         text = document.getElementsByName("posttextarea");
         text = text[1].value;
         recipient = lastsearched;
+        result = serverstub.postMessage(localStorage.getItem("token"), text, recipient);
+        document.getElementsByName("posttextarea")[1].value = "";
+        searchUser();
+    //    updateMessages(recipient);
+        return result.success;
     }
     else {
         text = document.getElementsByName("posttextarea");
         text = text[0].value;
         recipient = serverstub.getUserDataByToken(localStorage.getItem("token")).data.email;
+        result = serverstub.postMessage(localStorage.getItem("token"), text, recipient);
+        updateMessages(recipient);
+        document.getElementsByName("posttextarea")[0].value = "";
+        return result.success;
     }
-    var result = serverstub.postMessage(localStorage.getItem("token"), text, recipient);
-    updateMessages();
-    document.getElementById("posttextarea").value = "";
-    return result.success;
+  //  var result = serverstub.postMessage(localStorage.getItem("token"), text, recipient);
+   // updateMessages();
+  //  document.getElementById("posttextarea").value = "";
+  //  return result.success;
 };
 
 checkPassword = function() {
@@ -161,6 +171,7 @@ selected = function(item) {
         document.getElementById("homeview").style.display = "none";
         document.getElementById("browseview").style.display = "block";
         document.getElementById("accountview").style.display = "none";
+        searchUser();
     } else {
         document.getElementById("homeview").style.display = "none";
         document.getElementById("browseview").style.display = "none";
@@ -193,11 +204,18 @@ updateMessages = function(email) {
         else
             document.getElementById("messages").innerHTML += "<div>"+ messages[i].writer + " - " + messages[i].content + "</div>";
     }
+    return messages.success;
 };
 
 searchUser = function(formData) {
-    var email = formData.searchemail.value;
+    var email;
+    if (formData == null) {
+        email = lastsearched;
+    }
+    else {
+    email = formData.searchemail.value;
     lastsearched = email;
+    }
     var result = serverstub.getUserDataByEmail(localStorage.getItem("token"), email);
     if (result.success) {
         updateHome(email);
