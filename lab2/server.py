@@ -1,5 +1,6 @@
 from flask import Flask
-import database_helper
+import database_helperi
+import hashlib, uuid
 app = Flask(__name__)
 
 
@@ -8,10 +9,12 @@ if __name__ == '__main__':
 
 @app.route('/signin', methods=['POST'])
 def sign_in(email, password):
-    return true
+
+    return token
 
 @app.route('/signup', methods=['POST'])
 def sign_up(email, password, firstname, familyname, gender, city, country):
     if request.method == 'POST':
-        token = database_helper.add_contact(email, password, firstname, familyname, gender, city, country)
-    return token
+        salt = uuid.uuid4().hex
+        hashed_password = hashlib.sha256(password + salt).hexdigest()
+        database_helper.add_user(email, hashed_password, firstname, familyname, gender, city, country)
