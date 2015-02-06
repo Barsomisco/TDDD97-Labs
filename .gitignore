@@ -3,3 +3,4 @@
 *.orig
 *.db
 lab2/virtualenv/
+*.pyc

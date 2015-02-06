@@ -11,11 +11,14 @@ def get_db():
     return db
 
 def add_user(email, password, firstname, familyname, gender, city, country):
-    c = get_db()
-    cursor = c.cursor()
+    c = connect_db()
     user = (email, password, firstname, familyname, gender, city, country)
-    cursor.execute('''INSERT INTO users VALUES (?, ?, ?, ?, ?, ?, ?)''', user)
-    c.commit()
+    try:
+        result = c.execute('''INSERT INTO users VALUES (?, ?, ?, ?, ?, ?, ?)''', user)
+        c.commit()
+    except:
+        return False
+    return True
 
 def close():
     get_db().close()
