@@ -31,5 +31,34 @@ def get_password(email):
     except:
         return False
 
+
+
+
+
+
+
+def get_email(token):
+    c.connect_db()
+    cur = c.cursor()
+    tok = (token ,)
+    try:
+        cur.execute('''SELECT email FROM logged_in_users WHERE token=?''', tok)
+        result = cur.fetchone()
+        return result[0]
+    except:
+        return False
+
+def change_password(email, new_password):
+    c.connect_db()
+    cur = c.cursor()
+   # mail = (email,)
+   # new_pass = (new_password,)
+    try:
+        cur.execute('''UPDATE users SET password=? WHERE email=?''', (new_password, email))
+        c.commit()
+        return True
+    except:
+        return False
+
 def close():
     get_db().close()
