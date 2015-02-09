@@ -14,13 +14,22 @@ def add_user(email, password, firstname, familyname, gender, city, country):
     c = connect_db()
     user = (email, password, firstname, familyname, gender, city, country)
     try:
-        result = c.execute('''INSERT INTO users VALUES (?, ?, ?, ?, ?, ?, ?)''', user)
+        c.execute('''INSERT INTO users VALUES (?, ?, ?, ?, ?, ?, ?)''', user)
         c.commit()
     except:
         return False
     return True
 
+def get_password(email):
+    c = connect_db()
+    cur = c.cursor()
+    mail = (email,)
+    try:
+        cur.execute('''SELECT password FROM users WHERE email=?''', mail)
+        result = cur.fetchone()
+        return result[0]
+    except:
+        return False
+
 def close():
     get_db().close()
-
-add_user('apa@hej.com', 'apa', 'apa', 'apa', 'apa', 'apa', 'apa')
