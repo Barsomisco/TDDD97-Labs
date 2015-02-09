@@ -41,22 +41,21 @@ def sign_up():
         database_helper.add_user(email, hashed_password, firstname, familyname, gender, city, country)
         return "Bra jobbat"
 
-<<<<<<< HEAD
 @app.route('/changepass', methods=['POST'])
 def change_password():
     if request.method == 'POST':
         token = request.form['token']
         old_password = request.form['old_password']
         new_password = request.form['new_password']
-        email = database_helper.get.email(token)
-        db_current_hashed_password = database_helper.get_password(email).hexdigest()
+        email = database_helper.get_email(token)
+        db_current_hashed_password = database_helper.get_password(email)
         hashed_old_password = hashlib.sha256(old_password).hexdigest()
         if hashed_old_password == db_current_hashed_password:
-            database_helper.change_password(email, new_password)
+            hashed_new_password = hashlib.sha256(new_password).hexdigest()
+            database_helper.change_password(email, hashed_new_password)
             return 'successful'
         else:
             return 'failed'
-=======
 
 @app.route('/signout', methods=['POST'])
 def sign_out():
@@ -72,7 +71,6 @@ def get_user_data_by_token():
         user_data = database_helper.get_user_data(token)
         return json.dumps([{'email': user_data[0], 'firstname':user_data[1], 'familyname':user_data[2], 'gender':user_data[3], 'city':user_data[4], 'country':user_data[5]}])
 
->>>>>>> a6e1ed4aab7a81b1372873e7a8cda8757103e190
 
 if __name__ == '__main__':
     app.run()

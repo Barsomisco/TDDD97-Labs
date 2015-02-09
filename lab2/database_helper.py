@@ -36,16 +36,10 @@ def get_password(email):
         return False
 
 
-<<<<<<< HEAD
-
-
-
-
-
 def get_email(token):
-    c.connect_db()
+    c = connect_db()
     cur = c.cursor()
-    tok = (token ,)
+    tok = (token,)
     try:
         cur.execute('''SELECT email FROM logged_in_users WHERE token=?''', tok)
         result = cur.fetchone()
@@ -54,17 +48,19 @@ def get_email(token):
         return False
 
 def change_password(email, new_password):
-    c.connect_db()
+    c = connect_db()
     cur = c.cursor()
+    user = (new_password, email)
    # mail = (email,)
    # new_pass = (new_password,)
     try:
-        cur.execute('''UPDATE users SET password=? WHERE email=?''', (new_password, email))
+        cur.execute('''UPDATE users SET password=? WHERE email=?''', user)
         c.commit()
         return True
     except:
         return False
-=======
+
+
 def add_token(email, token):
     c = connect_db()
     user = (token, email)
@@ -91,16 +87,14 @@ def get_user_data(token):
     c = connect_db()
     cur = c.cursor()
     tok = (token,)
+    email = (get_email(token),)
     try:
-        cur.execute('''SELECT email FROM logged_in_users WHERE token=?''', tok)
-        email = cur.fetchone()
         cur.execute('''SELECT * FROM users WHERE email=?''', email)
         result = cur.fetchone()
         return [result[0], result[2], result[3], result[4], result[5], result[6]]
     except:
         return False
 
->>>>>>> a6e1ed4aab7a81b1372873e7a8cda8757103e190
 
 def close():
     get_db().close()
