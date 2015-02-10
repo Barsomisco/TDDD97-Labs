@@ -83,13 +83,38 @@ def remove_token(token):
         return False
 
 
-def get_user_data(token):
+def get_user_data_by_token(token):
     c = connect_db()
     cur = c.cursor()
     tok = (token,)
     email = (get_email(token),)
     try:
         cur.execute('''SELECT * FROM users WHERE email=?''', email)
+        result = cur.fetchone()
+        return [result[0], result[2], result[3], result[4], result[5], result[6]]
+    except:
+        return False
+
+
+def is_logged_in(token):
+    c = connect_db()
+    cur = c.cursor()
+    tok = (token,)
+    try:
+        cur.execute('''SELECT EXISTS(SELECT * FROM logged_in_users WHERE token=?)''', tok)
+    except:
+        return False
+    if cur.fetchone()[0] == 1:
+        return True
+    return False
+       
+
+def get_user_data_by_email(email):
+    c = connect_db()
+    cur = c.cursor()
+    mail = (email,)
+    try:
+        cur.execute('''SELECT * FROM users WHERE email=?''', mail)
         result = cur.fetchone()
         return [result[0], result[2], result[3], result[4], result[5], result[6]]
     except:
