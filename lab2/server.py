@@ -74,13 +74,23 @@ def get_user_data_by_token():
 
 @app.route('/userdata/email', methods=['POST'])
 def get_user_data_by_email():
-    token = request.form['token']
-    email = request.form['email']
-    if database_helper.is_logged_in(token):
-        print('yolo')
-        user_data = database_helper.get_user_data_by_email(email)
-        return json.dumps([{'email': user_data[0], 'firstname':user_data[1], 'familyname':user_data[2], 'gender':user_data[3], 'city':user_data[4], 'country':user_data[5]}])
+    if request.method == 'POST':
+        token = request.form['token']
+        email = request.form['email']
+        if database_helper.is_logged_in(token):
+            user_data = database_helper.get_user_data_by_email(email)
+            return json.dumps([{'email': user_data[0], 'firstname':user_data[1], 'familyname':user_data[2], 'gender':user_data[3], 'city':user_data[4], 'country':user_data[5]}])
     return False
+
+
+@app.route('/messages/token', methods=['POST'])
+def get_user_messages_by_token():
+    if request.method == 'POST':
+        token = request.form['token']
+        messages = database_helper.get_user_messages_by_token(token)
+        return json.dumps([{'messages': messages}])
+    return False
+
 
 if __name__ == '__main__':
     app.run()

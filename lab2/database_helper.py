@@ -119,7 +119,21 @@ def get_user_data_by_email(email):
         return [result[0], result[2], result[3], result[4], result[5], result[6]]
     except:
         return False
-
+    
+def get_user_messages_by_token(token):
+    c = connect_db()
+    cur = c.cursor()
+    email = (get_email(token),)
+    print('yolo')
+    try:
+        cur.execute('''SELECT message FROM messages WHERE email=?''', email)
+    except:
+        return False
+    result = cur.fetchall()
+    messages = []
+    for m in result:
+        messages.append(m[0])
+    return messages
 
 def close():
     get_db().close()
