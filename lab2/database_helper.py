@@ -15,9 +15,10 @@ def get_db():
 
 def add_user(email, password, firstname, familyname, gender, city, country):
     c = connect_db()
+    cur = c.cursor()
     user = (email, password, firstname, familyname, gender, city, country)
     try:
-        c.execute('''INSERT INTO users VALUES (?, ?, ?, ?, ?, ?, ?)''', user)
+        cur.execute('''INSERT INTO users VALUES (?, ?, ?, ?, ?, ?, ?)''', user)
         c.commit()
     except:
         return False

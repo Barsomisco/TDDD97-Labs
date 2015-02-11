@@ -22,9 +22,9 @@ def sign_in():
         token = uuid.uuid4().hex
         if hashed_password == db_password:
             database_helper.add_token(email, token)
-            return json.dumps([{'success': 'true', 'message': "Login successful!", 'token': token}])
+            return json.dumps([{'success': True, 'message': "Login successful!", 'token': token}])
         else:
-            return json.dumps([{'success': 'false', 'message': '''Wrong email or password'''}])
+            return json.dumps([{'success': False, 'message': '''Wrong email or password'''}])
 
 
 @app.route('/signup', methods=['POST'])
@@ -38,8 +38,9 @@ def sign_up():
         city = request.form['city']
         country = request.form['country']
         hashed_password = hashlib.sha256(password).hexdigest()
-        database_helper.add_user(email, hashed_password, firstname, familyname, gender, city, country)
-        return "Bra jobbat"
+        if database_helper.add_user(email, hashed_password, firstname, familyname, gender, city, country):
+            return json.dumps([{'success': True, 'message': '''Sign up successful'''}])
+        return json.dumps([{'success': False, 'message': '''User with that email already exists'''}])
 
 @app.route('/changepass', methods=['POST'])
 def change_password():
