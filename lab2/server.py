@@ -102,6 +102,16 @@ def post_message():
         result = database_helper.post_message(sender, message, email)
         return json.dumps([{'success':result}])
 
+@app.route('/messages/email', methods=['POST'])
+def get_user_messages_by_email():
+    if request.method == 'POST':
+        token = request.form['token']
+        email = request.form['email']
+        if database_helper.is_logged_in(token):
+            messages = database_helper.get_user_messages_by_email(email)
+            if len(messages) > 0:
+                return json.dumps([{'success': True, 'messages': messages}])
+        return json.dumps([{'success': False, 'message': '''There is no user with that email'''}])
 
 if __name__ == '__main__':
     app.run()
