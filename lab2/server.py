@@ -92,5 +92,16 @@ def get_user_messages_by_token():
     return False
 
 
+@app.route('/postmessage', methods=['POST'])
+def post_message():
+    if request.method == 'POST':
+        token = request.form['token']
+        message = request.form['message']
+        email = request.form['email']
+        sender = database_helper.get_email(token)
+        result = database_helper.post_message(sender, message, email)
+        return json.dumps([{'success':result}])
+
+
 if __name__ == '__main__':
     app.run()

@@ -124,9 +124,8 @@ def get_user_messages_by_token(token):
     c = connect_db()
     cur = c.cursor()
     email = (get_email(token),)
-    print('yolo')
     try:
-        cur.execute('''SELECT message FROM messages WHERE email=?''', email)
+        cur.execute('''SELECT message FROM messages WHERE receiver=?''', email)
     except:
         return False
     result = cur.fetchall()
@@ -134,6 +133,17 @@ def get_user_messages_by_token(token):
     for m in result:
         messages.append(m[0])
     return messages
+
+def post_message(sender, message, receiver):
+    c = connect_db()
+    cur = c.cursor()
+    message_info = (sender, message, receiver)
+    try:
+        cur.execute('''INSERT INTO messages VALUES (?, ?, ?)''', message_info)
+    except:
+        return False
+    c.commit()
+    return True
 
 def close():
     get_db().close()
