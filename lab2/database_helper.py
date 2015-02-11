@@ -51,8 +51,6 @@ def change_password(email, new_password):
     c = connect_db()
     cur = c.cursor()
     user = (new_password, email)
-   # mail = (email,)
-   # new_pass = (new_password,)
     try:
         cur.execute('''UPDATE users SET password=? WHERE email=?''', user)
         c.commit()
@@ -127,6 +125,21 @@ def get_user_messages_by_token(token):
     print('yolo')
     try:
         cur.execute('''SELECT message FROM messages WHERE email=?''', email)
+    except:
+        return False
+    result = cur.fetchall()
+    messages = []
+    for m in result:
+        messages.append(m[0])
+    return messages
+
+
+def get_user_messages_by_email(email):
+    c = connect_db()
+    cur = c.cursor()
+    mail = (email,)
+    try:
+        cur.execute('''SELECT message FROM messages WHERE email=?''', mail)
     except:
         return False
     result = cur.fetchall()
