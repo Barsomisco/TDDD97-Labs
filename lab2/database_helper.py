@@ -122,9 +122,8 @@ def get_user_messages_by_token(token):
     c = connect_db()
     cur = c.cursor()
     email = (get_email(token),)
-    print('yolo')
     try:
-        cur.execute('''SELECT message FROM messages WHERE email=?''', email)
+        cur.execute('''SELECT message FROM messages WHERE receiver=?''', email)
     except:
         return False
     result = cur.fetchall()

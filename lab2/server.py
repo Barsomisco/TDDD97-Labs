@@ -3,6 +3,7 @@ import database_helper
 import hashlib
 import uuid
 import json
+from validate_email import validate_email
 
 app = Flask(__name__)
 
@@ -39,6 +40,10 @@ def sign_up():
         gender = request.form['gender']
         city = request.form['city']
         country = request.form['country']
+        if len(password) < 7:
+            return json.dumps([{'success': False, 'message': '''Password is too short'''}])
+        if validate_email(email) == False:
+            return json.dumps([{'success': False, 'message': '''Not a valid email'''}])
         hashed_password = hashlib.sha256(password).hexdigest()
         if database_helper.add_user(email, hashed_password, firstname, familyname, gender, city, country):
             return json.dumps([{'success': True, 'message': '''User signed up successfully'''}])
@@ -53,6 +58,8 @@ def change_password():
         email = database_helper.get_email(token)
         if email == False:
             return json.dumps([{'success': False, 'message': "Invalid token"}])
+        if len(new_password) < 7:
+            return json.dumps([{'success': False, 'message': '''Password is too short'''}])
         db_current_hashed_password = database_helper.get_password(email)
         hashed_old_password = hashlib.sha256(old_password).hexdigest()
         if hashed_old_password == db_current_hashed_password:
