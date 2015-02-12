@@ -51,8 +51,6 @@ def change_password(email, new_password):
     c = connect_db()
     cur = c.cursor()
     user = (new_password, email)
-   # mail = (email,)
-   # new_pass = (new_password,)
     try:
         cur.execute('''UPDATE users SET password=? WHERE email=?''', user)
         c.commit()
@@ -141,10 +139,10 @@ def post_message(sender, message, receiver):
     message_info = (sender, message, receiver)
     try:
         cur.execute('''INSERT INTO messages VALUES (?, ?, ?)''', message_info)
+        c.commit()
+        return True
     except:
         return False
-    c.commit()
-    return True
 
 def get_user_messages_by_email(email):
     c = connect_db()
