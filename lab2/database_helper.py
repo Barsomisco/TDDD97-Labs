@@ -158,5 +158,18 @@ def get_user_messages_by_email(email):
         messages.append(m[0])
     return messages
 
+
+def user_exists(email):
+    c = connect_db()
+    cur = c.cursor()
+    mail = (email,)
+    try:
+        cur.execute('''SELECT EXISTS(SELECT * FROM users WHERE email=?)''', mail)
+    except:
+        return False
+    if cur.fetchone()[0] == 1:
+        return True
+    return False
+
 def close():
     get_db().close()
