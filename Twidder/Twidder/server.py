@@ -18,14 +18,14 @@ def sign_in():
         password = request.form['password']
         db_password = database_helper.get_password(email)
         if db_password == False:
-            return json.dumps([{'success': False, 'message': "Wrong email!", 'token': ''}])
+            return json.dumps([{'success': False, 'message': "Wrong email!"}])
         hashed_password = hashlib.sha256(password).hexdigest()
         token = uuid.uuid4().hex
         if hashed_password == db_password:
             if database_helper.add_token(email, token):
                 return json.dumps([{'success': True, 'message': "Login successful!", 'token': token}])
         else:
-            return json.dumps([{'success': False, 'message': '''Wrong email or password'''}])
+            return json.dumps([{'success': False, 'message': '''Wrong password'''}])
 
 
 @app.route('/signup', methods=['POST'])

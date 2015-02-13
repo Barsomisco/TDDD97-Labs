@@ -1,5 +1,6 @@
 var tab;
 var lastsearched;
+xmlhttp = new XMLHttpRequest();
 
 displayView = function() {
     if (localStorage.getItem("token") !== null) {
@@ -14,17 +15,28 @@ window.onload = function() {
     displayView();
 };
 
-logInValidation = function(signInForm) {
-    var result = serverstub.signIn(signInForm.signinemail.value, signInForm.signinpassword.value);
-    signinmessage.innerHTML = result.message;
-    if (result.success) {
-        localStorage.token = result.data;
-        document.getElementById("view").innerHTML = document.getElementById("profileview").innerHTML;
-        selected(document.getElementById("home"));
-        return true;
-    } else {
-        return false;
+xmlhttp.onreadystatechange = function() {
+    if (xmlhttp.readyState == 4 & xmlhttp.status == 200) {
+        data = xmlhttp.responseText;
+        console.log(data);
     }
+};
+
+logInValidation = function(signInForm) {
+    xmlhttp.open("POST", "/signin", true);
+    var params = "email="+signInForm.signinemail.value+"&password="+signInForm.signinpassword.value;
+    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xmlhttp.send(params);
+  //  var result = serverstub.signIn(signInForm.signinemail.value, signInForm.signinpassword.value);
+  //  signinmessage.innerHTML = result.message;
+  //  if (result.success) {
+   //     localStorage.token = result.data;
+  //      document.getElementById("view").innerHTML = document.getElementById("profileview").innerHTML;
+  //      selected(document.getElementById("home"));
+ //       return true;
+ //   } else {
+ //       return false;
+ //   }
 };
 
 checkRequiredPassword = function() {
