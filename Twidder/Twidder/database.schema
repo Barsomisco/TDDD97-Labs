@@ -1,0 +1,8 @@
+CREATE TABLE if NOT EXISTS users (email text primary key,
+            password text, firstname text, familyname text, 
+            gender text, city text, country text);
+
+CREATE TABLE if NOT EXISTS logged_in_users (
+            token text primary key, email text);
+
+CREATE TABLE if NOT EXISTS messages (sender text, message text, receiver text);
