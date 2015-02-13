@@ -1,5 +1,5 @@
 from flask import Flask
-app = Flask(__name__)
+app = Flask('Twidder')
+app = Flask(__name__, static_url_path='')
 
 import Twidder.server
-

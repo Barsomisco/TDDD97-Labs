@@ -7,10 +7,9 @@ import json
 from validate_email import validate_email
 
 
-@app.route('/')
-def hello():
-    return "hello world!"
-
+@app.route('/', methods=['GET', 'POST'])
+def welcome_view():
+    return app.send_static_file('client.html')
 
 @app.route('/signin', methods=['POST'])
 def sign_in():
