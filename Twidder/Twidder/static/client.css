@@ -53,6 +53,7 @@ h3 {
 span {
     color: red;
 }
+
 span.smallConfirmMessage {
     font-size: 9px;
 }
