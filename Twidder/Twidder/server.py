@@ -62,6 +62,7 @@ def change_password():
         hashed_old_password = hashlib.sha256(old_password).hexdigest()
         if hashed_old_password == db_current_hashed_password:
             hashed_new_password = hashlib.sha256(new_password).hexdigest()
+            database_helper.change_password(email, hashed_new_password)
             return json.dumps({'success': True, 'message': "Password changed"})
         return json.dumps({'success': False, 'message': "Wrong password"})
 
@@ -89,10 +90,12 @@ def get_user_data_by_email():
     if request.method == 'POST':
         token = request.form['token']
         email = request.form['email']
+        if database_helper.user_exists(email) == False:    
+            return json.dumps({'success': False, 'message': '''Email doesn't exist'''})
         if database_helper.is_logged_in(token):
             user_data = database_helper.get_user_data_by_email(email)
             return json.dumps({'success': True, 'message': 'Userdata retrieved', 'email': user_data[0], 'firstname':user_data[1], 'familyname':user_data[2], 'gender':user_data[3], 'city':user_data[4], 'country':user_data[5]})
-        return json.dumps({'success': False, 'message': '''Token doesn't exist'''})
+        return json.dumps({'success': False, 'message': ''})
 
 
 @app.route('/messages/token', methods=['POST'])

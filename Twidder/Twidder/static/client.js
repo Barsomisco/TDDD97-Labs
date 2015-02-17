@@ -61,40 +61,40 @@ postText = function() {
             data = JSON.parse(xmlhttp.responseText);
             console.log(data.success);
             if (data.success) {
-                localStorage.token = data.token;
-                document.getElementById("view").innerHTML = document.getElementById("profileview").innerHTML;
-                selected(document.getElementById("home"));
-            }
-            else {
-                signinmessage.innerHTML = data.message;
+                if (tab == "Browse") {
+                    document.getElementsByName("posttextarea")[1].value = "";
+                    updateMessages(lastsearched);
+                }
+                else {
+                    document.getElementsByName("posttextarea")[0].value = "";
+                    updateMessages(document.getElementById("loggedinemail").innerHTML);
+                }
             }
         }
     };
     var recipient;
     var text;
     var token = localStorage.getItem("token");
+    xmlhttp.open("POST", "/postmessage", true);
     if (tab == "Browse") {
         text = document.getElementsByName("posttextarea");
         text = text[1].value;
         recipient = lastsearched;
-        xmlhttp.open("POST", "/postmessage", true);
         var params = "email="+recipient+"&token="+token+"&message="+text;
         xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xmlhttp.send(params);
-        //       result = serverstub.postMessage(localStorage.getItem("token"), text, recipient);
-        //       document.getElementsByName("posttextarea")[1].value = "";
-        //      searchUser();
-        //       return result.success;
-        //   }
-        //   else {
-        //       text = document.getElementsByName("posttextarea");
-        //       text = text[0].value;
-        //       recipient = serverstub.getUserDataByToken(localStorage.getItem("token")).data.email;
-        //       result = serverstub.postMessage(localStorage.getItem("token"), text, recipient);
+    }
+    else {
+        text = document.getElementsByName("posttextarea");
+        text = text[0].value;
+        recipient = document.getElementById("loggedinemail").innerHTML;
+        var params = "email="+recipient+"&token="+token+"&message="+text;
+        xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        //        result = serverstub.postMessage(localStorage.getItem("token"), text, recipient);
         //       updateMessages(recipient);
         //       document.getElementsByName("posttextarea")[0].value = "";
         //       return result.success;
     }
+    xmlhttp.send(params);
 };
 
 checkPassword = function() {
@@ -124,6 +124,13 @@ checkNewPassword = function(newpassword) {
 };
 
 changePassword = function(formData) {
+    xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 & xmlhttp.status == 200) {
+            data = JSON.parse(xmlhttp.responseText);
+            console.log(data.success);
+            message.innerHTML = data.message;
+        }
+    };
     var token = localStorage.getItem("token");
     var oldPassword = formData.oldpassword.value;
     var newPassword = formData.newpassword.value;
@@ -132,9 +139,10 @@ changePassword = function(formData) {
         message.innerHTML = "Password is to short";
         return false;
     }
-    var result = serverstub.changePassword(token, oldPassword, newPassword);
-    message.innerHTML = result.message;
-    return result.success;
+    xmlhttp.open("POST", "/changepass", true);
+    var params = "old_password="+oldPassword+"&token="+token+"&new_password="+newPassword;
+    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xmlhttp.send(params);
 };
 
 signUpValidation = function(formData) {
@@ -190,7 +198,7 @@ signOut = function() {
             if (data.success) {
                 document.getElementById("view").innerHTML = document.getElementById("welcomeview").innerHTML;
             }
-
+            lastsearched = "";
         }
     };
     var token = localStorage.getItem("token");
@@ -215,7 +223,6 @@ selected = function(item) {
         document.getElementById("browseview").style.display = "none";
         document.getElementById("accountview").style.display = "none";
         updateHome();
-        updateMessages();
     } else if (item.innerHTML == "Browse") {
         document.getElementById("homeview").style.display = "none";
         document.getElementById("browseview").style.display = "block";
@@ -228,56 +235,116 @@ selected = function(item) {
     }
 };
 
+showHome = function(data) {
+    document.getElementById("loggedinname").innerHTML = data.firstname;
+    document.getElementById("loggedinfamilyname").innerHTML = data.familyname;
+    document.getElementById("loggedingender").innerHTML = data.gender;
+    document.getElementById("loggedincity").innerHTML = data.city;
+    document.getElementById("loggedincountry").innerHTML = data.country;
+    document.getElementById("loggedinemail").innerHTML = data.email; 
+};
+
 updateHome = function(email) {
+    xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 & xmlhttp.status == 200) {
+            data = JSON.parse(xmlhttp.responseText);
+            console.log(data.success);
+            if (data.success) {
+                console.log(data.email);
+                showHome(data);
+                updateMessages(data.email);
+            }
+        }
+    };
+
+    var token = localStorage.getItem("token");
     if (email == null) {
-        email = serverstub.getUserDataByToken(localStorage.getItem("token")).data.email;
+        xmlhttp.open("POST", "/userdata/token", true);
+        var params = "token="+token;
+    } else {
+        xmlhttp.open("POST", "/userdata/email", true);
+        var params = "token="+token+"&email="+email;
     }
 
-    var userdata = serverstub.getUserDataByEmail(localStorage.getItem("token"), email).data;
-    document.getElementById("loggedinname").innerHTML = userdata.firstname;
-    document.getElementById("loggedinfamilyname").innerHTML = userdata.familyname;
-    document.getElementById("loggedingender").innerHTML = userdata.gender;
-    document.getElementById("loggedincity").innerHTML = userdata.city;
-    document.getElementById("loggedincountry").innerHTML = userdata.country;
-    document.getElementById("loggedinemail").innerHTML = userdata.email;
+    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xmlhttp.send(params);
+};
+
+showMessages = function(data) {
+    var messages = data.messages;
+    console.log(data);
+    for (var i = messages[0].length - 1; i >= 0; --i) {
+        if (i === messages[0].length - 1)
+            document.getElementById("messages").innerHTML = "<div>" + messages[1][i] + " - " + messages[0][i] + "</div>";
+        else
+            document.getElementById("messages").innerHTML += "<div>"+ messages[1][i] + " - " + messages[0][i] + "</div>";
+    }
+    if (tab == "Browse") {
+        document.getElementById("userpage").innerHTML = document.getElementById("homeview").innerHTML;
+        document.getElementsByName("header")[1].innerHTML = "";
+        document.getElementById("wrongemail").innerHTML = "";
+    }
 };
 
 updateMessages = function(email) {
+    xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 & xmlhttp.status == 200) {
+            data = JSON.parse(xmlhttp.responseText);
+            console.log(data.success);
+            if (data.success) {
+                console.log(data.messages);
+                showMessages(data);
+            }
+        }
+    };
+
+    console.log(email)
+    var token = localStorage.getItem("token");
     if (email == null) {
-        email = serverstub.getUserDataByToken(localStorage.getItem("token")).data.email;
+        xmlhttp.open("POST", "/messages/token", true);
+        var params = "token="+token;
+    } else {
+        xmlhttp.open("POST", "/messages/email", true);
+        var params = "token="+token+"&email="+email;
     }
-    var messages = serverstub.getUserMessagesByEmail(localStorage.getItem("token"), email).data;
-    for (var i = 0; i<messages.length; ++i) {
-        if (i === 0)
-            document.getElementById("messages").innerHTML = "<div>" + messages[i].writer + " - " + messages[i].content + "</div>";
-        else
-            document.getElementById("messages").innerHTML += "<div>"+ messages[i].writer + " - " + messages[i].content + "</div>";
-    }
-    return messages.success;
+
+    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xmlhttp.send(params);
 };
 
 searchUser = function(formData) {
+    xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 & xmlhttp.status == 200) {
+            data = JSON.parse(xmlhttp.responseText);
+            console.log(data.success);
+            if (data.success) {
+                showHome(data);
+                updateMessages(data.email)
+            }
+            else {
+                document.getElementById("userpage").innerHTML = "";
+                if (document.getElementById("searchemail").value == "") {
+                    document.getElementById("wrongemail").innerHTML = "";
+                } else 
+                    document.getElementById("wrongemail").innerHTML = data.message;
+            }
+        }
+    };
+
     var email;
     if (formData == null) {
         email = lastsearched;
-
     }
     else {
         email = formData.searchemail.value;
         lastsearched = email;
     }
-    var result = serverstub.getUserDataByEmail(localStorage.getItem("token"), email);
-    if (result.success) {
-        updateHome(email);
-        updateMessages(email);
-        document.getElementById("userpage").innerHTML = document.getElementById("homeview").innerHTML;
-        document.getElementsByName("header")[1].innerHTML = "";
-        document.getElementById("wrongemail").innerHTML = "";
-    }
-    else {
-        if (formData != null) {
-            document.getElementById("wrongemail").innerHTML = result.message;
-        }
-        return false;
-    }
+
+    var token = localStorage.getItem("token");
+    xmlhttp.open("POST", "/userdata/email", true);
+    var params = "token="+token+"&email="+email;
+    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xmlhttp.send(params);
+
+    return false;
 };

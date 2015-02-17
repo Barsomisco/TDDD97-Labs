@@ -123,13 +123,15 @@ def get_user_messages_by_token(token):
     cur = c.cursor()
     email = (get_email(token),)
     try:
-        cur.execute('''SELECT message FROM messages WHERE receiver=?''', email)
+        cur.execute('''SELECT message, sender FROM messages WHERE receiver=?''', email)
     except:
         return False
     result = cur.fetchall()
     messages = []
+    senders = []
     for m in result:
         messages.append(m[0])
+        senders.append(m[1])
     return messages
 
 def post_message(sender, message, receiver):
@@ -148,14 +150,16 @@ def get_user_messages_by_email(email):
     cur = c.cursor()
     mail = (email,)
     try:
-        cur.execute('''SELECT message FROM messages WHERE receiver=?''', mail)
+        cur.execute('''SELECT message, sender FROM messages WHERE receiver=?''', mail)
     except:
         return False
     result = cur.fetchall()
     messages = []
+    senders = []
     for m in result:
         messages.append(m[0])
-    return messages
+        senders.append(m[1])
+    return messages, senders
 
 
 def user_exists(email):
