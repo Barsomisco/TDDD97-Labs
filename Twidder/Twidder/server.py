@@ -5,6 +5,20 @@ import hashlib
 import uuid
 import json
 from validate_email import validate_email
+from gevent.pywsgi import WSGIServer
+
+connection = []
+
+@app.route('/socket')
+def autologout():
+    if request.environ.get('wsgi.websocket'):
+        ws = request.environ['wsgi.websocket']
+        while True:
+            message = ws.receive()
+            connection.append([ws, database_helper.get_email(message)])
+            print(connection)
+            ws.send(message)
+    return 
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -21,6 +35,10 @@ def sign_in():
             return json.dumps({'success': False, 'message': "Wrong email!"})
         hashed_password = hashlib.sha256(password).hexdigest()
         token = uuid.uuid4().hex
+        for user in connection:
+            print(user[1] + email)
+            if user[1] == email:
+                user[0].send('Signout')
         if hashed_password == db_password:
             if database_helper.add_token(email, token):
                 return json.dumps({'success': True, 'message': "Login successful!", 'token': token})
