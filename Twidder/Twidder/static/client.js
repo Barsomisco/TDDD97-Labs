@@ -33,8 +33,8 @@ logInValidation = function(signInForm) {
                 };
 
                 socket.onmessage = function(event) {
-                    console.log(event.data);
-               //     console.log('onmsg');
+                    if (event.data == 'Signout')
+                        signOut();
                 };
                 document.getElementById("view").innerHTML = document.getElementById("profileview").innerHTML;
                 selected(document.getElementById("home"));

@@ -88,6 +88,12 @@ def change_password():
 def sign_out():
     if request.method == 'POST':
         token = request.form['token']
+        i = 0;
+        for user in connection:
+            if database_helper.get_email(token) == user[1]:
+                del connection[i]
+                print(connection)
+            i = i + 1
         if database_helper.remove_token(token):
             return json.dumps({'success': True, 'message': 'signed out successfully!'})
         return json.dumps({'success': False, 'message': '''token doesn't exist'''})
