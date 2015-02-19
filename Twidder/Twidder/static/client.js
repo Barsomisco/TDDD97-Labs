@@ -150,7 +150,7 @@ checkNewRepeatedPassword = function(newrepeatedpassword) {
         message.innerHTML = "";
         return false;
     }
-}
+};
 
 changePassword = function(formData) {
     xmlhttp.onreadystatechange = function() {
@@ -335,12 +335,20 @@ updateMessages = function(email) {
     };
 
     var token = localStorage.getItem("token");
+    var params;
     if (email == null) {
-        xmlhttp.open("POST", "/messages/token", true);
-        var params = "token="+token;
+        if (tab == "Browse") {
+            email = document.getElementById("searchemail").value;
+            console.log(email);
+            xmlhttp.open("POST", "/messages/email");
+            params = "token="+token+"&email="+email;
+        } else {
+            xmlhttp.open("POST", "/messages/token", true);
+            params = "token="+token;
+        }
     } else {
         xmlhttp.open("POST", "/messages/email", true);
-        var params = "token="+token+"&email="+email;
+        params = "token="+token+"&email="+email;
     }
 
     xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -354,7 +362,7 @@ searchUser = function(formData) {
             console.log(data.success);
             if (data.success) {
                 showHome(data);
-                updateMessages(data.email)
+                updateMessages(data.email);
             }
             else {
                 document.getElementById("userpage").innerHTML = "";
