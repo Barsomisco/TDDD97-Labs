@@ -18,7 +18,7 @@ def autologout():
             connection.append([ws, database_helper.get_email(message)])
             print(connection)
             ws.send(message)
-    return 
+    return
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -36,7 +36,7 @@ def sign_in():
         hashed_password = hashlib.sha256(password).hexdigest()
         token = uuid.uuid4().hex
         for user in connection:
-            print(user[1] + email)
+            #print(user[1] + email)
             if user[1] == email:
                 user[0].send('Signout')
         if hashed_password == db_password:
@@ -114,7 +114,7 @@ def get_user_data_by_email():
     if request.method == 'POST':
         token = request.form['token']
         email = request.form['email']
-        if database_helper.user_exists(email) == False:    
+        if database_helper.user_exists(email) == False:
             return json.dumps({'success': False, 'message': '''Email doesn't exist'''})
         if database_helper.is_logged_in(token):
             user_data = database_helper.get_user_data_by_email(email)

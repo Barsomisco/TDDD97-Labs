@@ -105,7 +105,7 @@ def is_logged_in(token):
     if cur.fetchone()[0] == 1:
         return True
     return False
-       
+
 
 def get_user_data_by_email(email):
     c = connect_db()
@@ -117,7 +117,7 @@ def get_user_data_by_email(email):
         return [result[0], result[2], result[3], result[4], result[5], result[6]]
     except:
         return False
-    
+
 def get_user_messages_by_token(token):
     c = connect_db()
     cur = c.cursor()
@@ -132,7 +132,7 @@ def get_user_messages_by_token(token):
     for m in result:
         messages.append(m[0])
         senders.append(m[1])
-    return messages
+    return messages, senders
 
 def post_message(sender, message, receiver):
     c = connect_db()

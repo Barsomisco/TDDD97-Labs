@@ -120,30 +120,59 @@ checkPassword = function() {
 };
 
 checkNewPassword = function(newpassword) {
-    var password = newpassword.value;
+    var password = document.getElementById("newpassword").value;
     var message = document.getElementById("newpassmessage");
+    message.style.color = "Red";
+    if (password.length < 7) {
+        message.innerHTML = "Password is to short";
+        return false;
+    } else if (!checkNewRepeatedPassword()) {
+        return false;
+    } else {
+        message.innerHTML = "";
+        return false;
+    }
+};
+
+checkNewRepeatedPassword = function(newrepeatedpassword) {
+    var password = document.getElementById("newpassword").value;
+    var repeatedPassword = document.getElementById("newrepeatedpassword").value;
+    var message = document.getElementById("newpassmessage");
+    message.style.color = "Red";
     if (password.length < 7) {
         message.innerHTML = "Password is to short";
         return false;
     }
-    message.innerHTML = "";
-    return true;
-};
+    if (password != repeatedPassword) {
+        message.innerHTML = "Passwords does not match";
+        return false;
+    } else {
+        message.innerHTML = "";
+        return false;
+    }
+}
 
 changePassword = function(formData) {
     xmlhttp.onreadystatechange = function() {
         if (xmlhttp.readyState == 4 & xmlhttp.status == 200) {
             data = JSON.parse(xmlhttp.responseText);
             console.log(data.success);
+            message.style.color = "Green";
             message.innerHTML = data.message;
         }
     };
     var token = localStorage.getItem("token");
     var oldPassword = formData.oldpassword.value;
     var newPassword = formData.newpassword.value;
+    var repeatedNewPassword = formData.newrepeatedpassword.value;
     var message = document.getElementById("newpassmessage");
+    message.style.color = "Red";
     if (newPassword.length < 7) {
         message.innerHTML = "Password is to short";
+        return false;
+    }
+    if (newPassword != repeatedNewPassword) {
+        message.innerHTML = "Passwords do not match";
         return false;
     }
     xmlhttp.open("POST", "/changepass", true);

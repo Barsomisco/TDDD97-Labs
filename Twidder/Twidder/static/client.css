@@ -102,7 +102,7 @@ textarea {
 input.account {
     position: absolute;
     right: 102px;
-    bottom: 100px;
+    bottom: 60px;
 }
 span.newpasswordmessage {
     width: 350px;
