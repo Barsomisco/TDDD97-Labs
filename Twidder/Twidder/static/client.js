@@ -338,7 +338,7 @@ updateMessages = function(email) {
     var params;
     if (email == null) {
         if (tab == "Browse") {
-            email = document.getElementById("searchemail").value;
+            email = lastsearched;
             console.log(email);
             xmlhttp.open("POST", "/messages/email");
             params = "token="+token+"&email="+email;
