@@ -3,8 +3,22 @@ var lastsearched;
 var data;
 var xmlhttp = new XMLHttpRequest();
 var socket;
+var page = require('page');
 
+page('/', function() {
+    console.log('hej');
+    displayView();
+});
 
+page('/home', function() {
+    selected(document.getElementById("home"));
+});
+
+page('/browse', function() {
+    selected(document.getElementById("browse"));
+});
+
+page();
 
 displayView = function() {
     if (localStorage.getItem("token") !== null) {
