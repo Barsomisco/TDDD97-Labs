@@ -5,6 +5,7 @@ var xmlhttp = new XMLHttpRequest();
 var socket = new WebSocket("ws://localhost:5000/socket");
 //var page = require("page");
 
+
 socket.onopen = function() {
     if (localStorage.getItem("token") !== null) {
         socket.send(localStorage.getItem("token"));
@@ -29,29 +30,11 @@ window.onbeforeunload = function() {
 displayView = function() {
     if (localStorage.getItem("token") !== null) {
         document.getElementById("view").innerHTML = document.getElementById("profileview").innerHTML;
-        selected(document.getElementById("home"));
+        initialize_page();
     } else {
         document.getElementById("view").innerHTML = document.getElementById("welcomeview").innerHTML;
     }
 };
-
-page('/', function() {
-    console.log('är vi i page?');
-    //    displayView();
-});
-
-page('/home', function() {
-    console.log(' är vi i home?');
-    //    selected(document.getElementById("home"));
-});
-
-page('/browse', function() {
-    console.log("är vi i browse?");
-    //    selected(document.getElementById("browse"));
-});
-
-
-page.start();
 
 logInValidation = function(signInForm) {
     xmlhttp.onreadystatechange = function() {
@@ -133,6 +116,7 @@ postText = function() {
     var params = "email="+recipient+"&token="+token+"&message="+text;
     xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xmlhttp.send(params);
+    page.redirect('/browse');
 };
 
 checkPassword = function() {
@@ -284,23 +268,31 @@ selected = function(item) {
         if (item.parentNode.childNodes[i].nodeType == Node.ELEMENT_NODE && item.parentNode.childNodes[i].innerHTML != item.innerHTML)
             item.parentNode.childNodes[i].style.backgroundColor = "gray";
     }
+
+    var old_tab = tab;
+
     tab = item.innerHTML;
 
     if (item.innerHTML == "Home") {
         document.getElementById("homeview").style.display = "block";
         document.getElementById("browseview").style.display = "none";
         document.getElementById("accountview").style.display = "none";
+        if (tab != old_tab)
+            page.redirect('/home');
         updateHome();
     } else if (item.innerHTML == "Browse") {
         document.getElementById("homeview").style.display = "none";
         document.getElementById("browseview").style.display = "block";
         document.getElementById("accountview").style.display = "none";
+        if (tab != old_tab)
+            page.redirect('/browse');
         searchUser();
-        page.redirect('/browse');
     } else {
         document.getElementById("homeview").style.display = "none";
         document.getElementById("browseview").style.display = "none";
         document.getElementById("accountview").style.display = "block";
+        if (tab != old_tab)
+            page.redirect('/account');
     }
 };
 
@@ -423,4 +415,29 @@ searchUser = function(formData) {
     xmlhttp.send(params);
 
     return false;
+};
+
+initialize_page = function() {
+    page('/home', function() {
+        console.log('home');
+        selected(document.getElementById("home"));
+    });
+
+    page('/browse', function() {
+        console.log('browse');
+        selected(document.getElementById("browse"));
+    });
+
+    page('/account', function() {
+        console.log('account');
+        console.log(document.getElementById("account"));
+        selected(document.getElementById("account"));
+    });
+
+    page('*', function() {
+        console.log('fallback');
+        selected(document.getElementById("home"));
+    });
+
+    page.start();
 };
