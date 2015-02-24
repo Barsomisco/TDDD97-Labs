@@ -2,23 +2,30 @@ var tab;
 var lastsearched;
 var data;
 var xmlhttp = new XMLHttpRequest();
-var socket;
-var page = require('page');
+var socket = new WebSocket("ws://localhost:5000/socket");
+//var page = require("page");
 
-page('/', function() {
-    console.log('hej');
+socket.onopen = function() {
+    if (localStorage.getItem("token") !== null) {
+        socket.send(localStorage.getItem("token"));
+        socket.onmessage = function(event) {
+            if (event.data == 'Signout')
+                signOut();
+        };
+    }
+};
+
+window.onload = function() {
     displayView();
-});
+};
 
-page('/home', function() {
-    selected(document.getElementById("home"));
-});
 
-page('/browse', function() {
-    selected(document.getElementById("browse"));
-});
+window.onbeforeunload = function() {
+    console.log("i buferunload");
+    socket.send("close connection");
+    socket.close();
+};
 
-page();
 
 displayView = function() {
     if (localStorage.getItem("token") !== null) {
@@ -29,22 +36,32 @@ displayView = function() {
     }
 };
 
-window.onload = function() {
-    displayView();
-};
+page('/', function() {
+    console.log('är vi i page?');
+    //    displayView();
+});
+
+page('/home', function() {
+    console.log(' är vi i home?');
+    //    selected(document.getElementById("home"));
+});
+
+page('/browse', function() {
+    console.log("är vi i browse?");
+    //    selected(document.getElementById("browse"));
+});
+
+
+page.start();
 
 logInValidation = function(signInForm) {
     xmlhttp.onreadystatechange = function() {
         if (xmlhttp.readyState == 4 & xmlhttp.status == 200) {
             data = JSON.parse(xmlhttp.responseText);
-            console.log(data.success);
+            console.log(data.success+" körs login");
             if (data.success) {
-                socket = new WebSocket("ws://localhost:5000/socket");
                 localStorage.token = data.token;
-                socket.onopen = function() {
-                    socket.send(localStorage.getItem('token'));
-                    console.log('hej');
-                };
+                socket.send(localStorage.getItem('token'));
 
                 socket.onmessage = function(event) {
                     if (event.data == 'Signout')
@@ -52,6 +69,7 @@ logInValidation = function(signInForm) {
                 };
                 document.getElementById("view").innerHTML = document.getElementById("profileview").innerHTML;
                 selected(document.getElementById("home"));
+                page.redirect('/home');
             }
             else {
                 signinmessage.innerHTML = data.message;
@@ -247,6 +265,7 @@ signOut = function() {
             console.log(data.success);
             if (data.success) {
                 document.getElementById("view").innerHTML = document.getElementById("welcomeview").innerHTML;
+                page.redirect('/');
             }
             lastsearched = "";
         }
@@ -278,6 +297,7 @@ selected = function(item) {
         document.getElementById("browseview").style.display = "block";
         document.getElementById("accountview").style.display = "none";
         searchUser();
+        page.redirect('/browse');
     } else {
         document.getElementById("homeview").style.display = "none";
         document.getElementById("browseview").style.display = "none";

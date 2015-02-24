@@ -13,17 +13,32 @@ connection = []
 def autologout():
     if request.environ.get('wsgi.websocket'):
         ws = request.environ['wsgi.websocket']
+        print('i autologout')
         while True:
             message = ws.receive()
-            connection.append([ws, database_helper.get_email(message)])
-            print(connection)
-            ws.send(message)
+            print(message)
+            if message == "close connection":
+                print(message)
+                for user in connection:
+                    if user[0] == ws:
+                        connection.remove(user)
+            if message != None:
+                print(message)
+                email = database_helper.get_email(message)
+                if email != False:
+                    connection.append([ws, email])
+                    print(connection)
+                    ws.send(message)
     return
 
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/', methods=['GET'])
 def welcome_view():
     return app.send_static_file('client.html')
+
+#@app.route('/home', methods=['GET', 'POST'])
+#def welcome_view2():
+#    return app.send_static_file('client.html')
 
 @app.route('/signin', methods=['POST'])
 def sign_in():
@@ -158,6 +173,16 @@ def get_user_messages_by_email():
             if database_helper.user_exists(email):
                 return json.dumps({'success': True, 'message': '''Messages retrieved successfully''', 'messages': messages})
         return json.dumps({'success': False, 'message': '''There is no user with that email'''})
+
+
+#@app.route('/<path:p>')
+#def fallback(p):
+#    return app.send_static_file('client.html')
+
+
+@app.errorhandler(404)
+def fallback(e):
+    return app.send_static_file('client.html')
 
 if __name__ == '__main__':
     app.run()
