@@ -1,6 +1,7 @@
 var tab;
 var lastsearched;
 var data;
+var backbutton;
 var xmlhttp = new XMLHttpRequest();
 var socket = new WebSocket("ws://localhost:5000/socket");
 //var page = require("page");
@@ -16,7 +17,13 @@ socket.onopen = function() {
     }
 };
 
+window.onpopstate = function() {
+    savehistory = false;
+};
+
 window.onload = function() {
+    savehistory = false;
+    console.log('onload');
     displayView();
 };
 
@@ -33,6 +40,7 @@ displayView = function() {
         initialize_page();
     } else {
         document.getElementById("view").innerHTML = document.getElementById("welcomeview").innerHTML;
+        initialize_page();
     }
 };
 
@@ -277,23 +285,37 @@ selected = function(item) {
         document.getElementById("homeview").style.display = "block";
         document.getElementById("browseview").style.display = "none";
         document.getElementById("accountview").style.display = "none";
-        if (tab != old_tab)
+        if (tab != old_tab) {
             page.redirect('/home');
+            save_to_history("Home");
+        }
         updateHome();
     } else if (item.innerHTML == "Browse") {
         document.getElementById("homeview").style.display = "none";
         document.getElementById("browseview").style.display = "block";
         document.getElementById("accountview").style.display = "none";
-        if (tab != old_tab)
+        if (tab != old_tab) {
             page.redirect('/browse');
+            save_to_history("Browse");
+        }
         searchUser();
     } else {
         document.getElementById("homeview").style.display = "none";
         document.getElementById("browseview").style.display = "none";
         document.getElementById("accountview").style.display = "block";
-        if (tab != old_tab)
+        if (tab != old_tab) {
             page.redirect('/account');
+            save_to_history("Account");
+        }
     }
+};
+
+save_to_history = function(historyname) {
+    if (savehistory) {
+        var stateObj = {name:historyname};
+        history.pushState(stateObj, historyname, historyname);
+    }
+    savehistory = true;
 };
 
 showHome = function(data) {
@@ -418,25 +440,48 @@ searchUser = function(formData) {
 };
 
 initialize_page = function() {
+    page('/welcome', function() {
+        if (localStorage.getItem("token") !== null) {
+            page.redirect('/home');
+        }
+    });
+
     page('/home', function() {
-        console.log('home');
-        selected(document.getElementById("home"));
+        if (localStorage.getItem("token") !== null) {
+            selected(document.getElementById("home"));
+        }
+        else {
+            page.redirect('/welcome');
+        }
     });
 
     page('/browse', function() {
         console.log('browse');
-        selected(document.getElementById("browse"));
+        if (localStorage.getItem("token") !== null) {
+            console.log('browselogin');
+            selected(document.getElementById("browse"));
+        }
+        else {
+            page.redirect('/welcome');
+        }
     });
 
     page('/account', function() {
-        console.log('account');
-        console.log(document.getElementById("account"));
-        selected(document.getElementById("account"));
+        if (localStorage.getItem("token") !== null) {
+            selected(document.getElementById("account"));
+        }
+        else {
+            page.redirect('/welcome');
+        }
     });
 
     page('*', function() {
-        console.log('fallback');
-        selected(document.getElementById("home"));
+        if (localStorage.getItem("token") !== null) {
+            page.redirect('/home');
+        }
+        else {
+            page.redirect('/welcome');
+        }
     });
 
     page.start();
