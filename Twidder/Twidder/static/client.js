@@ -21,7 +21,6 @@ window.onload = function() {
 
 
 window.onbeforeunload = function() {
-    console.log("i buferunload");
     socket.send("close connection");
     socket.close();
 };
