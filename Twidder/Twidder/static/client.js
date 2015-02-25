@@ -124,7 +124,6 @@ postText = function() {
     var params = "email="+recipient+"&token="+token+"&message="+text;
     xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xmlhttp.send(params);
-    page.redirect('/browse');
 };
 
 checkPassword = function() {
@@ -358,9 +357,9 @@ showMessages = function(data) {
     console.log(data);
     for (var i = messages[0].length - 1; i >= 0; --i) {
         if (i === messages[0].length - 1)
-            document.getElementById("messages").innerHTML = "<div>" + messages[1][i] + " - " + messages[0][i] + "</div>";
+            document.getElementById("messages").innerHTML = "<div draggable=\"true\" ondragstart=\"drag(event)\">" + messages[1][i] + " - " + messages[0][i] + "</div>";
         else
-            document.getElementById("messages").innerHTML += "<div>"+ messages[1][i] + " - " + messages[0][i] + "</div>";
+            document.getElementById("messages").innerHTML += "<div draggable=\"true\" ondragstart=\"drag(event)\">"+ messages[1][i] + " - " + messages[0][i] + "</div>";
     }
     if (tab == "Browse") {
         document.getElementById("userpage").innerHTML = document.getElementById("homeview").innerHTML;
