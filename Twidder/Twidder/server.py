@@ -1,13 +1,19 @@
 from Twidder import app
 from flask import request
+from werkzeug import secure_filename
 import database_helper
 import hashlib
 import uuid
 import json
+import os
 from validate_email import validate_email
 
 
 connection = []
+PICTURE_FOLDER = './Twidder/pictures'
+PICTURE_ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
+VIDEO_FOLDER = './Twidder/video'
+VIDEO_ALLOWED_EXTENSIONS = set(['mp4', 'ogg'])
 
 
 @app.route('/socket')
@@ -32,6 +38,34 @@ def autologout():
 @app.route('/', methods=['GET'])
 def welcome_view():
     return app.send_static_file('client.html')
+
+
+def allowed_filename(filename):
+    return '.' in filename and \
+        filename.rsplit('.', 1)[1] in PICTURE_ALLOWED_EXTENSIONS
+
+
+@app.route('/postpicture', methods=['POST'])
+def upload_picture():
+    if request.method == 'POST':
+        token = request.form['token']
+        picture = request.files['picture']
+        if database_helper.is_logged_in(token) is False:
+            return json.dumps({'success': False,
+                               'message': '''Not logged in'''})
+        email = database_helper.get_email(token)
+        if picture and allowed_filename(picture.filename):
+            filename = secure_filename(picture.filename)
+            if not os.path.exists(PICTURE_FOLDER + '/' + email):
+                os.makedirs(PICTURE_FOLDER + '/' + email)
+            picture.save(os.path.join(PICTURE_FOLDER + '/' + email, filename))
+            database_helper.save_picture(email,
+                                         os.path.join(PICTURE_FOLDER + '/' +
+                                                      email, filename))
+            return json.dumps({'success': True,
+                              'message': '''File uploaded successfully!'''})
+        return json.dumps({'success': False,
+                           'message': '''Invalid file format'''})
 
 
 @app.route('/signin', methods=['POST'])

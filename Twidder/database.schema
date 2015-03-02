@@ -6,3 +6,9 @@ CREATE TABLE if NOT EXISTS logged_in_users (
             token text primary key, email text);
 
 CREATE TABLE if NOT EXISTS messages (sender text, message text, receiver text);
+
+CREATE TABLE if NOT EXISTS pictures (
+            email text primary key, path text);
+
+CREATE TABLE if NOT EXISTS videos (
+            email text primary key, path text);
