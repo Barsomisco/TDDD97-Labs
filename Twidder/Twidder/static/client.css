@@ -70,9 +70,9 @@ span.smallConfirmMessage {
     position: relative;
 }
 #homeview, #browseview {
-    width: 710px;
+    width: 1070px;
 }
-#wall {
+#wall, #uploads {
     margin-left: 10px;
 }
 #messages div {
@@ -81,7 +81,7 @@ span.smallConfirmMessage {
     margin-bottom: 3px;
 }
 #post,
-#wall {
+#wall, #uploads {
     background-color: white;
     width: 350px;
     float: left;
@@ -93,6 +93,11 @@ span.smallConfirmMessage {
 #post label {
     float: left;
     margin-left: 5px;
+}
+
+#post input {
+    margin-bottom: 10px; 
+    margin-right: 180px;
 }
 textarea {
     width: 340px;
@@ -122,4 +127,8 @@ button.bottomright {
 #browseview {
     background-color: white;
     height: 100px;
+}
+
+#uploads img {
+    width: 100%;
 }

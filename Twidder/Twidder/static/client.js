@@ -377,6 +377,7 @@ updateMessages = function(email) {
                 console.log(data.messages);
                 showMessages(data);
             }
+            updateMedia(email);
         }
     };
 
@@ -385,7 +386,6 @@ updateMessages = function(email) {
     if (email == null) {
         if (tab == "Browse") {
             email = lastsearched;
-            console.log(email);
             xmlhttp.open("POST", "/messages/email");
             params = "token="+token+"&email="+email;
         } else {

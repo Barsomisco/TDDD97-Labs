@@ -5,3 +5,4 @@
 lab2/virtualenv/
 *.pyc
 Twidder/Twidder/static/node_modules/
+*.ropeproject

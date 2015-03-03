@@ -7,6 +7,7 @@ import uuid
 import json
 import os
 from validate_email import validate_email
+import base64
 
 
 connection = []
@@ -26,13 +27,13 @@ def autologout():
                 for user in connection:
                     if user[0] == ws:
                         connection.remove(user)
-            if message is not None:
-                email = database_helper.get_email(message)
-                if email is not False:
-                    connection.append([ws, email])
-                    print(connection)
-                    ws.send(message)
-    return
+                        if message is not None:
+                            email = database_helper.get_email(message)
+                            if email is not False:
+                                connection.append([ws, email])
+                                print(connection)
+                                ws.send(message)
+                                return
 
 
 @app.route('/', methods=['GET'])
@@ -58,14 +59,53 @@ def upload_picture():
             filename = secure_filename(picture.filename)
             if not os.path.exists(PICTURE_FOLDER + '/' + email):
                 os.makedirs(PICTURE_FOLDER + '/' + email)
+            if database_helper.save_picture(email, os.path.join(
+                    PICTURE_FOLDER + '/' + email, filename)) is False:
+                return json.dumps({'success': False,
+                                   'message': '''Failed to upload'''})
             picture.save(os.path.join(PICTURE_FOLDER + '/' + email, filename))
-            database_helper.save_picture(email,
-                                         os.path.join(PICTURE_FOLDER + '/' +
-                                                      email, filename))
-            return json.dumps({'success': True,
-                              'message': '''File uploaded successfully!'''})
+            return json.dumps({'success': True, 'message': '''File uploaded
+                                successfully!'''})
         return json.dumps({'success': False,
                            'message': '''Invalid file format'''})
+
+
+@app.route('/pictures/token', methods=['POST'])
+def get_user_pictures_by_token():
+    if request.method == 'POST':
+        token = request.form['token']
+        email = database_helper.get_email(token)
+        pictures_paths = database_helper.get_user_pictures_by_email(email)
+        if pictures_paths is not False:
+            pictures = []
+            for picture in pictures_paths:
+                with open(picture) as p:
+                    pictures.append(base64.b64encode(p.read()))
+                return json.dumps({'success': True,
+                                   'message': '''User pictures retrieved''',
+                                   'pictures': pictures})
+        return json.dumps({'success': False,
+                           'message': '''Token doesn't exists'''})
+
+
+@app.route('/pictures/email', methods=['POST'])
+def get_user_pictures_by_email():
+    if request.method == 'POST':
+        token = request.form['token']
+        email = request.form['email']
+        if database_helper.is_logged_in(token):
+            if database_helper.user_exists(email):
+                pictures_paths = database_helper.get_user_pictures_by_email(
+                    email)
+                pictures = []
+                for picture in pictures_paths:
+                    with open(picture) as p:
+                        pictures.append(base64.b64encode(p.read()))
+                return json.dumps({'success': True,
+                                   'message': '''Messages retrieved
+                                   successfully''', 'pictures': pictures})
+        return json.dumps({'success': False,
+                           'message': '''There is no user with that email'''})
 
 
 @app.route('/signin', methods=['POST'])
@@ -74,6 +114,7 @@ def sign_in():
         email = request.form['email']
         password = request.form['password']
         db_password = database_helper.get_password(email)
+        print("wth")
         if db_password is False:
             return json.dumps({'success': False, 'message': "Wrong email!"})
         hashed_password = hashlib.sha256(password).hexdigest()

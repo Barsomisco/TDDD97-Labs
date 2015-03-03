@@ -3,6 +3,7 @@
 <head>
     <link href="client.css" type="text/css" rel="stylesheet">
     <script src="node_modules/page/page.js" type="text/javascript"></script>
+    <script src="media.js" type="text/javascript"></script>
     <script src="client.js" type="text/javascript"></script>
     <script src="drag_drop.js" type="text/javascript"></script>
     <script type="text/view" id="welcomeview">
@@ -81,12 +82,19 @@
                 <textarea name="posttextarea" ondrop="drop(event)" ondragover="allowDrop(event)" required></textarea>
                 <input type="submit" value="Post"></input>
             </form>
+            <br/>
+            <form name="uploadmedia" enctype="multipart/form-data" onsubmit="postMedia(); return false;">
+            <h2> Upload picture or audio files </h2>
+            <input type="file" id="browsefile"/>
+            <input type="submit" value="Upload"/>
+            </form>
             </div>
             <div id="wall">
                 <h1>Wall</h1>
                 <button id="reloadmessages" onclick="updateMessages()">Refresh</button>
                 <div id="messages"></div>
             </div>
+            <div id="uploads"></div>
         </div>
          <div id="browseview">
             <h1>Search for a user</h1>

@@ -8,7 +8,7 @@ CREATE TABLE if NOT EXISTS logged_in_users (
 CREATE TABLE if NOT EXISTS messages (sender text, message text, receiver text);
 
 CREATE TABLE if NOT EXISTS pictures (
-            email text primary key, path text);
+            email text, path text);
 
-CREATE TABLE if NOT EXISTS videos (
-            email text primary key, path text);
+CREATE TABLE if NOT EXISTS audio (
+            email text, path text);

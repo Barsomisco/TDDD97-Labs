@@ -140,6 +140,21 @@ def get_user_messages_by_token(token):
     return messages, senders
 
 
+def get_user_pictures_by_email(email):
+    c = connect_db()
+    cur = c.cursor()
+    mail = (email,)
+    try:
+        cur.execute('''SELECT path FROM pictures WHERE email=?''', mail)
+    except:
+        return False
+    result = cur.fetchall()
+    pictures_paths = []
+    for p in result:
+        pictures_paths.append(p[0])
+    return pictures_paths
+
+
 def post_message(sender, message, receiver):
     c = connect_db()
     cur = c.cursor()
@@ -188,6 +203,7 @@ def save_picture(email, file_path):
     c = connect_db()
     cur = c.cursor()
     picture = (email, file_path)
+    print(picture)
     try:
         cur.execute('''INSERT INTO pictures VALUES(?, ?)''', picture)
         c.commit()
