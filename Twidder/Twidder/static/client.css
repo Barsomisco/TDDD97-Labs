@@ -72,7 +72,7 @@ span.smallConfirmMessage {
 #homeview, #browseview {
     width: 1070px;
 }
-#wall, #uploads {
+#wall, div[name="uploads"] {
     margin-left: 10px;
 }
 #messages div {
@@ -81,7 +81,7 @@ span.smallConfirmMessage {
     margin-bottom: 3px;
 }
 #post,
-#wall, #uploads {
+#wall, div[name="uploads"] {
     background-color: white;
     width: 350px;
     float: left;
@@ -129,6 +129,7 @@ button.bottomright {
     height: 100px;
 }
 
-#uploads img {
+div[name="uploads"] img, audio controls {
     width: 100%;
+    margin-bottom: 10px;
 }

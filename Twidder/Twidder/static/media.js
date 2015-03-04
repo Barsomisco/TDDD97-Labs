@@ -6,19 +6,18 @@ isPicture = function(file) {
 };
 
 showMedia = function(pictures) {
-    document.getElementById("uploads").innerHTML = "";
     for (var i = pictures.length - 1; i >= 0; --i) {
         if (isPicture(pictures[i])) {
             if (i === pictures.length - 1)
-                document.getElementById("uploads").innerHTML = "<img src=\"data:image/" + pictures[i][1] + ";base64,"+pictures[i][0]+"\" />";
+                document.getElementsByName("uploads")[0].innerHTML = "<img src=\"data:image/" + pictures[i][1] + ";base64,"+pictures[i][0]+"\" />";
             else
-                document.getElementById("uploads").innerHTML += "<img src=\"data:image/" + pictures[i][1] + ";base64,"+pictures[i][0]+"\" />";
+                document.getElementsByName("uploads")[0].innerHTML += "<img src=\"data:image/" + pictures[i][1] + ";base64,"+pictures[i][0]+"\" />";
         }
         else {
             if (i === pictures.length - 1)
-                document.getElementById("uploads").innerHTML = "<audio controls><source src=\"data:audio/" + pictures[i][1] + ";base64,"+pictures[i][0]+"\" />";
+                document.getElementsByName("uploads")[0].innerHTML = "<audio controls><source src=\"data:audio/" + pictures[i][1] + ";base64,"+pictures[i][0]+"\" />";
             else
-                document.getElementById("uploads").innerHTML += "<audio controls><source src=\"data:audio/" + pictures[i][1] + ";base64,"+pictures[i][0]+"\" />";
+                document.getElementsByName("uploads")[0].innerHTML += "<audio controls><source src=\"data:audio/" + pictures[i][1] + ";base64,"+pictures[i][0]+"\" />";
         }
     }
 };
@@ -29,15 +28,7 @@ updateMedia = function(email) {
             data = JSON.parse(xmlhttp.responseText);
             if (data.success) {
                 showMedia(data.media);
-            }
-        }
-        if (xmlhttp.readyState == 2 & xmlhttp.status == 200) {
-            if (tab == "Browse") {
-                document.getElementById("userpage").innerHTML = document.getElementById("homeview").innerHTML;
-                document.getElementsByName("header")[1].innerHTML = "";
-                document.getElementById("wrongemail").innerHTML = "";
-                document.getElementsByName("uploadmedia")[1].innerHTML = "";
-                document.getElementById("uploadmessage").innerHTML = "";
+                refreshPage();
             }
         }
     };

@@ -317,7 +317,20 @@ showHome = function(data) {
     document.getElementById("loggedingender").innerHTML = data.gender;
     document.getElementById("loggedincity").innerHTML = data.city;
     document.getElementById("loggedincountry").innerHTML = data.country;
-    document.getElementById("loggedinemail").innerHTML = data.email; 
+    document.getElementById("loggedinemail").innerHTML = data.email;
+    refreshPage();
+};
+
+refreshPage = function() {
+    if (tab == "Browse") {
+        document.getElementById("userpage").innerHTML = document.getElementById("homeview").innerHTML;
+        document.getElementsByName("header")[1].innerHTML = "";
+        document.getElementById("wrongemail").innerHTML = "";
+        document.getElementsByName("uploadmedia")[1].innerHTML = "";
+        document.getElementById("uploadmessage").innerHTML = "";
+    }
+    if (tab == "Home" && document.getElementsByName("uploads").length > 1)
+        document.getElementsByName("uploads")[1].innerHTML = "";
 };
 
 updateHome = function(email) {
@@ -331,6 +344,7 @@ updateHome = function(email) {
         }
     };
 
+    document.getElementsByName("uploads")[0].innerHTML = "";
     var params;
     var token = localStorage.getItem("token");
     if (email == null) {
@@ -353,11 +367,6 @@ showMessages = function(data) {
         else
             document.getElementById("messages").innerHTML += "<div draggable=\"true\" ondragstart=\"drag(event)\">"+ messages[1][i] + " - " + messages[0][i] + "</div>";
     }
-    if (tab == "Browse") {
-        document.getElementById("userpage").innerHTML = document.getElementById("homeview").innerHTML;
-        document.getElementsByName("header")[1].innerHTML = "";
-        document.getElementById("wrongemail").innerHTML = "";
-    }
 };
 
 updateMessages = function(email) {
@@ -366,6 +375,7 @@ updateMessages = function(email) {
             data = JSON.parse(xmlhttp.responseText);
             if (data.success) {
                 showMessages(data);
+                refreshPage();
             }
             updateMedia(email);
         }

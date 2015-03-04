@@ -29,7 +29,6 @@ def autologout():
                             email = database_helper.get_email(message)
                             if email is not False:
                                 connection.append([ws, email])
-                                print(connection)
                                 ws.send(message)
                                 return
 
@@ -42,6 +41,7 @@ def welcome_view():
 def allowed_filename(filename):
     return '.' in filename and \
         filename.rsplit('.', 1)[1] in MEDIA_ALLOWED_EXTENSIONS
+
 
 @app.route('/postmedia', methods=['POST'])
 def upload_media():
@@ -76,7 +76,7 @@ def get_user_media_by_token():
         if media_paths is not False:
             medias = []
             for media in media_paths:
-                media_extension = media.rsplit('.', 2)[2];
+                media_extension = media.rsplit('.', 2)[2]
                 with open(media) as m:
                     medias.append([base64.b64encode(m.read()), media_extension])
                 return json.dumps({'success': True,
@@ -97,8 +97,7 @@ def get_user_media_by_email():
                     email)
                 medias = []
                 for media in media_paths:
-                    media_extension = media.rsplit('.', 2)[2];
-                    print(media_extension)
+                    media_extension = media.rsplit('.', 2)[2]
                     with open(media) as m:
                         medias.append([base64.b64encode(m.read()),
                                        media_extension])
@@ -115,7 +114,6 @@ def sign_in():
         email = request.form['email']
         password = request.form['password']
         db_password = database_helper.get_password(email)
-        print("wth")
         if db_password is False:
             return json.dumps({'success': False, 'message': "Wrong email!"})
         hashed_password = hashlib.sha256(password).hexdigest()
@@ -187,7 +185,6 @@ def sign_out():
         for user in connection:
             if database_helper.get_email(token) == user[1]:
                 del connection[i]
-                print(connection)
             i = i + 1
         if database_helper.remove_token(token):
             return json.dumps({'success': True,
