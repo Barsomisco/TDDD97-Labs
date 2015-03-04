@@ -11,10 +11,8 @@ import base64
 
 
 connection = []
-PICTURE_FOLDER = './Twidder/pictures'
-PICTURE_ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
-VIDEO_FOLDER = './Twidder/video'
-VIDEO_ALLOWED_EXTENSIONS = set(['mp4', 'ogg'])
+MEDIA_FOLDER = './Twidder/media'
+MEDIA_ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif', 'ogg', 'mp4'])
 
 
 @app.route('/socket')
@@ -43,67 +41,70 @@ def welcome_view():
 
 def allowed_filename(filename):
     return '.' in filename and \
-        filename.rsplit('.', 1)[1] in PICTURE_ALLOWED_EXTENSIONS
+        filename.rsplit('.', 1)[1] in MEDIA_ALLOWED_EXTENSIONS
 
-
-@app.route('/postpicture', methods=['POST'])
-def upload_picture():
+@app.route('/postmedia', methods=['POST'])
+def upload_media():
     if request.method == 'POST':
         token = request.form['token']
-        picture = request.files['picture']
+        media = request.files['media']
         if database_helper.is_logged_in(token) is False:
             return json.dumps({'success': False,
                                'message': '''Not logged in'''})
         email = database_helper.get_email(token)
-        if picture and allowed_filename(picture.filename):
-            filename = secure_filename(picture.filename)
-            if not os.path.exists(PICTURE_FOLDER + '/' + email):
-                os.makedirs(PICTURE_FOLDER + '/' + email)
-            if database_helper.save_picture(email, os.path.join(
-                    PICTURE_FOLDER + '/' + email, filename)) is False:
+        if media and allowed_filename(media.filename):
+            filename = secure_filename(media.filename)
+            if not os.path.exists(MEDIA_FOLDER + '/' + email):
+                os.makedirs(MEDIA_FOLDER + '/' + email)
+            if database_helper.save_media(email, os.path.join(
+                    MEDIA_FOLDER + '/' + email, filename)) is False:
                 return json.dumps({'success': False,
                                    'message': '''Failed to upload'''})
-            picture.save(os.path.join(PICTURE_FOLDER + '/' + email, filename))
-            return json.dumps({'success': True, 'message': '''File uploaded
-                                successfully!'''})
+            media.save(os.path.join(MEDIA_FOLDER + '/' + email, filename))
+            return json.dumps({'success': True,
+                               'message': '''File uploaded successfully!'''})
         return json.dumps({'success': False,
                            'message': '''Invalid file format'''})
 
 
-@app.route('/pictures/token', methods=['POST'])
-def get_user_pictures_by_token():
+@app.route('/media/token', methods=['POST'])
+def get_user_media_by_token():
     if request.method == 'POST':
         token = request.form['token']
         email = database_helper.get_email(token)
-        pictures_paths = database_helper.get_user_pictures_by_email(email)
-        if pictures_paths is not False:
-            pictures = []
-            for picture in pictures_paths:
-                with open(picture) as p:
-                    pictures.append(base64.b64encode(p.read()))
+        media_paths = database_helper.get_user_media_by_email(email)
+        if media_paths is not False:
+            medias = []
+            for media in media_paths:
+                media_extension = media.rsplit('.', 2)[2];
+                with open(media) as m:
+                    medias.append([base64.b64encode(m.read()), media_extension])
                 return json.dumps({'success': True,
-                                   'message': '''User pictures retrieved''',
-                                   'pictures': pictures})
+                                   'message': '''User media retrieved
+                                   successfully''', 'media': medias})
         return json.dumps({'success': False,
                            'message': '''Token doesn't exists'''})
 
 
-@app.route('/pictures/email', methods=['POST'])
-def get_user_pictures_by_email():
+@app.route('/media/email', methods=['POST'])
+def get_user_media_by_email():
     if request.method == 'POST':
         token = request.form['token']
         email = request.form['email']
         if database_helper.is_logged_in(token):
             if database_helper.user_exists(email):
-                pictures_paths = database_helper.get_user_pictures_by_email(
+                media_paths = database_helper.get_user_media_by_email(
                     email)
-                pictures = []
-                for picture in pictures_paths:
-                    with open(picture) as p:
-                        pictures.append(base64.b64encode(p.read()))
+                medias = []
+                for media in media_paths:
+                    media_extension = media.rsplit('.', 2)[2];
+                    print(media_extension)
+                    with open(media) as m:
+                        medias.append([base64.b64encode(m.read()),
+                                       media_extension])
                 return json.dumps({'success': True,
-                                   'message': '''Messages retrieved
-                                   successfully''', 'pictures': pictures})
+                                   'message': '''User media retrieved
+                                   successfully''', 'media': medias})
         return json.dumps({'success': False,
                            'message': '''There is no user with that email'''})
 

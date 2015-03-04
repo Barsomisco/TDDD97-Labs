@@ -23,7 +23,6 @@ window.onpopstate = function() {
 
 window.onload = function() {
     savehistory = false;
-    console.log('onload');
     displayView();
 };
 
@@ -48,7 +47,6 @@ logInValidation = function(signInForm) {
     xmlhttp.onreadystatechange = function() {
         if (xmlhttp.readyState == 4 & xmlhttp.status == 200) {
             data = JSON.parse(xmlhttp.responseText);
-            console.log(data.success+" körs login");
             if (data.success) {
                 localStorage.token = data.token;
                 socket.send(localStorage.getItem('token'));
@@ -94,7 +92,6 @@ postText = function() {
     xmlhttp.onreadystatechange = function() {
         if (xmlhttp.readyState == 4 & xmlhttp.status == 200) {
             data = JSON.parse(xmlhttp.responseText);
-            console.log(data.success);
             if (data.success) {
                 if (tab == "Browse") {
                     document.getElementsByName("posttextarea")[1].value = "";
@@ -178,7 +175,6 @@ changePassword = function(formData) {
     xmlhttp.onreadystatechange = function() {
         if (xmlhttp.readyState == 4 & xmlhttp.status == 200) {
             data = JSON.parse(xmlhttp.responseText);
-            console.log(data.success);
             message.style.color = "Green";
             message.innerHTML = data.message;
         }
@@ -207,7 +203,6 @@ signUpValidation = function(formData) {
     xmlhttp.onreadystatechange = function() {
         if (xmlhttp.readyState == 4 & xmlhttp.status == 200) {
             data = JSON.parse(xmlhttp.responseText);
-            console.log(data.success);
             if (data.success) {
                 document.getElementById("signupmessage").style.color = "Green";
                 document.getElementById("signupmessage").innerHTML = data.message;
@@ -252,7 +247,6 @@ signOut = function() {
     xmlhttp.onreadystatechange = function() {
         if (xmlhttp.readyState == 4 & xmlhttp.status == 200) {
             data = JSON.parse(xmlhttp.responseText);
-            console.log(data.success);
             if (data.success) {
                 document.getElementById("view").innerHTML = document.getElementById("welcomeview").innerHTML;
                 page.redirect('/');
@@ -330,7 +324,6 @@ updateHome = function(email) {
     xmlhttp.onreadystatechange = function() {
         if (xmlhttp.readyState == 4 & xmlhttp.status == 200) {
             data = JSON.parse(xmlhttp.responseText);
-            console.log(data.success);
             if (data.success) {
                 showHome(data);
                 updateMessages(data.email);
@@ -354,7 +347,6 @@ updateHome = function(email) {
 
 showMessages = function(data) {
     var messages = data.messages;
-    console.log(data);
     for (var i = messages[0].length - 1; i >= 0; --i) {
         if (i === messages[0].length - 1)
             document.getElementById("messages").innerHTML = "<div draggable=\"true\" ondragstart=\"drag(event)\">" + messages[1][i] + " - " + messages[0][i] + "</div>";
@@ -372,9 +364,7 @@ updateMessages = function(email) {
     xmlhttp.onreadystatechange = function() {
         if (xmlhttp.readyState == 4 & xmlhttp.status == 200) {
             data = JSON.parse(xmlhttp.responseText);
-            console.log(data.success);
             if (data.success) {
-                console.log(data.messages);
                 showMessages(data);
             }
             updateMedia(email);
@@ -405,7 +395,6 @@ searchUser = function(formData) {
     xmlhttp.onreadystatechange = function() {
         if (xmlhttp.readyState == 4 & xmlhttp.status == 200) {
             data = JSON.parse(xmlhttp.responseText);
-            console.log(data.success);
             if (data.success) {
                 showHome(data);
                 updateMessages(data.email);
@@ -455,9 +444,7 @@ initialize_page = function() {
     });
 
     page('/browse', function() {
-        console.log('browse');
         if (localStorage.getItem("token") !== null) {
-            console.log('browselogin');
             selected(document.getElementById("browse"));
         }
         else {

@@ -1,16 +1,25 @@
+isPicture = function(file) {
+    file_extension = file[1];
+    if (file_extension != 'ogg' && file_extension != 'mp4')
+        return true;
+    return false;
+};
+
 showMedia = function(pictures) {
-    document.getElementById("uploads").innerHTML = "";  
+    document.getElementById("uploads").innerHTML = "";
     for (var i = pictures.length - 1; i >= 0; --i) {
-        if (i === pictures.length - 1)
-            document.getElementById("uploads").innerHTML = "<img src=\"data:image/jpeg;base64,"+pictures[i]+"\" />";
-        else
-            document.getElementById("uploads").innerHTML += "<img src=\"data:image/jpeg;base64,"+pictures[i]+"\" />";
-    }
-    if (tab == "Browse") {
-        document.getElementById("userpage").innerHTML = document.getElementById("homeview").innerHTML;
-        document.getElementsByName("header")[1].innerHTML = "";
-        document.getElementById("wrongemail").innerHTML = "";
-        document.getElementsByName("uploadmedia")[1].innerHTML = "";
+        if (isPicture(pictures[i])) {
+            if (i === pictures.length - 1)
+                document.getElementById("uploads").innerHTML = "<img src=\"data:image/" + pictures[i][1] + ";base64,"+pictures[i][0]+"\" />";
+            else
+                document.getElementById("uploads").innerHTML += "<img src=\"data:image/" + pictures[i][1] + ";base64,"+pictures[i][0]+"\" />";
+        }
+        else {
+            if (i === pictures.length - 1)
+                document.getElementById("uploads").innerHTML = "<audio controls><source src=\"data:audio/" + pictures[i][1] + ";base64,"+pictures[i][0]+"\" />";
+            else
+                document.getElementById("uploads").innerHTML += "<audio controls><source src=\"data:audio/" + pictures[i][1] + ";base64,"+pictures[i][0]+"\" />";
+        }
     }
 };
 
@@ -18,9 +27,17 @@ updateMedia = function(email) {
     xmlhttp.onreadystatechange = function() {
         if (xmlhttp.readyState == 4 & xmlhttp.status == 200) {
             data = JSON.parse(xmlhttp.responseText);
-            console.log(data.success);
             if (data.success) {
-               showMedia(data.pictures);
+                showMedia(data.media);
+            }
+        }
+        if (xmlhttp.readyState == 2 & xmlhttp.status == 200) {
+            if (tab == "Browse") {
+                document.getElementById("userpage").innerHTML = document.getElementById("homeview").innerHTML;
+                document.getElementsByName("header")[1].innerHTML = "";
+                document.getElementById("wrongemail").innerHTML = "";
+                document.getElementsByName("uploadmedia")[1].innerHTML = "";
+                document.getElementById("uploadmessage").innerHTML = "";
             }
         }
     };
@@ -30,46 +47,46 @@ updateMedia = function(email) {
     if (email == null) {
         if (tab == "Browse") {
             email = lastsearched;
-            xmlhttp.open("POST", "/pictures/email");
+            xmlhttp.open("POST", "/media/email");
             params = "token="+token+"&email="+email;
-            console.log("is wrong");
         } else {
-            xmlhttp.open("POST", "/pictures/token", true);
+            xmlhttp.open("POST", "/media/token", true);
             params = "token="+token;
-            console.log("is in correct?");
         }
     } else {
-        xmlhttp.open("POST", "/pictures/email", true);
+        xmlhttp.open("POST", "/media/email", true);
         params = "token="+token+"&email="+email;
     }
 
     xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xmlhttp.send(params);
-    
+
 };
 
 postMedia = function() {
     xmlhttp.onreadystatechange = function() {
         if (xmlhttp.readyState == 4 & xmlhttp.status == 200) {
             data = JSON.parse(xmlhttp.responseText);
-            console.log(data.success);
-            alert(data.message);
+            message.innerHTML = data.message;
             if (data.success) {
-              alert(data.message); 
+                message.style.color = "Green";
+                if (tab == "Browse")
+                    updateMedia(lastsearched);
+
+                else 
+                    updateMedia(document.getElementById("loggedinemail").innerHTML);
             }
         }
     };
-    
+
     var file = document.getElementById("browsefile").files[0];
-    console.log(file);
-//    var params;
+    var message = document.getElementById("uploadmessage");
+    message.style.color = "Red";
     var token = localStorage.getItem("token");
     var formData = new FormData();
-    xmlhttp.open('POST', '/postpicture', true);
-//    params = "token="+token+"&picture="+file;
+    xmlhttp.open('POST', '/postmedia', true);
     formData.append("token", token);
-    formData.append("picture", file);
- //   xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    formData.append("media", file);
     xmlhttp.send(formData);
 
 };
